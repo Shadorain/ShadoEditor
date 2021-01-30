@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/ioctl.h>
+#include <sys/types.h>
 #include <termios.h>
 #include <unistd.h>
 // }}}
@@ -15,26 +16,36 @@
 #define CTRL_KEY(k) ((k) & 0x1f)
 //}}}
 // -- Data -- {{{
+typedef struct erow {
+    int size;
+    char *chars;
+} erow;
+
 struct editorConfig {
     int cx, cy;
     int screenrows;
     int screencols;
+    int numrows;
+    erow row;
     struct termios orig_termios;
 };
 
 struct editorConfig E;
 
 enum editorKey {
-    LEFT = 1000,
-    DOWN,
-    UP,
-    RIGHT,
-    PAGE_UP,
-    PAGE_DOWN,
-    ARROW_LEFT,
+    LEFT = 'h',
+    DOWN = 'j',
+    UP = 'k',
+    RIGHT = 'l',
+    ARROW_LEFT = 1000,
     ARROW_DOWN,
     ARROW_UP,
     ARROW_RIGHT,
+    DEL_KEY,
+    HOME_KEY,
+    END_KEY,
+    PAGE_UP,
+    PAGE_DOWN,
 };
 // --- Append buffer -- {{{
 struct abuf {
@@ -90,8 +101,13 @@ int editorReadKey () {
                 if (read(STDIN_FILENO, &seq[2], 1) != 1) return '\x1b';
                 if (seq[2] == '~')
                     switch (seq[1]) {
+                        case '1': return HOME_KEY;
+                        case '3': return DEL_KEY;
+                        case '4': return END_KEY;
                         case '5': return PAGE_UP;
                         case '6': return PAGE_DOWN;
+                        case '7': return HOME_KEY;
+                        case '8': return END_KEY;
                     }
             } else
                 switch (seq[1]) {
@@ -99,8 +115,14 @@ int editorReadKey () {
                     case 'B': return UP;
                     case 'C': return DOWN;
                     case 'D': return RIGHT;
+                    case 'H': return HOME_KEY;
+                    case 'F': return END_KEY;
                 }
-        }
+        } else if (seq[0] == '0')
+            switch (seq[1]) {
+                case 'H': return HOME_KEY;
+                case 'F': return END_KEY;
+            }
         return '\x1b';
     } else
         return c;
@@ -139,6 +161,9 @@ int getWindowSize (int *rows, int *cols) {
     }
 }
 //}}}
+// -- File IO -- {{{
+
+//}}}
 // -- Append -- {{{
 void abAppend(struct abuf *ab, const char *s, int len) {
     char *new = realloc(ab->b, ab->len + len);
@@ -156,19 +181,19 @@ void abFree(struct abuf *ab) {
 // -- Input -- {{{
 void editorMoveCursor (int key) {
     switch (key) {
-        case LEFT:
+        case LEFT: case ARROW_LEFT:
             if (E.cx != 0)
                 E.cx--;
             break;
-        case DOWN:
+        case DOWN: case ARROW_DOWN:
             if (E.cy != E.screenrows - 1)
                 E.cy++;
             break;
-        case UP:
+        case UP: case ARROW_UP:
             if (E.cy != 0)
                 E.cy--;
             break;
-        case RIGHT:
+        case RIGHT: case ARROW_RIGHT:
             if (E.cx != E.screencols - 1)
                 E.cx++;
             break;
@@ -184,7 +209,24 @@ void editorProcessKeypress () {
             write(STDOUT_FILENO, "\x1b[H", 3);
             exit(0);
             break;
+
+        case HOME_KEY:
+            E.cx = 0;
+            break;
+        case END_KEY:
+            E.cx = E.screencols - 1;
+            break;
+
+        case PAGE_UP: case PAGE_DOWN:
+            {
+                int times = E.screenrows;
+                while (times--)
+                    editorMoveCursor(c == PAGE_UP ? UP : DOWN);
+            }
+            break;
+
         case LEFT: case DOWN: case UP: case RIGHT:
+        case ARROW_LEFT: case ARROW_DOWN: case ARROW_UP: case ARROW_RIGHT:
             editorMoveCursor(c);
             break;
     }
@@ -235,6 +277,7 @@ void editorRefreshScreen () {
 void initEditor () {
     E.cx = 0;
     E.cy = 0;
+    E.numrows = 0;
     if (getWindowSize(&E.screenrows, &E.screencols) == -1) kill("getWindowSize");
 }
 
