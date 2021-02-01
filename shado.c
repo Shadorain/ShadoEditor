@@ -48,6 +48,7 @@ struct editorConfig {
 struct editorConfig E;
 
 enum editorKey {
+    BACKSPACE = 127,
     LEFT = 'h',
     DOWN = 'j',
     UP = 'k',
@@ -224,6 +225,23 @@ void editorAppendRow(char *s, size_t len) {
     
     E.numrows++;
 }
+
+void editorRowInsertChar (erow *row, int at, int c) {
+    if (at < 0 || at > row->size) at = row->size;
+    row->chars = realloc(row->chars, row->size + 2);
+    memmove(&row->chars[at + 1], &row->chars[at], row->size - at + 1);
+    row->size++;
+    row->chars[at] = c;
+    editorUpdateRow(row);
+}
+//}}}
+// -- Editor Ops -- {{{
+void editorInsertChar (int c) {
+    if (E.cy == E.numrows)
+        editorAppendRow("", 0);
+    editorRowInsertChar(&E.row[E.cy], E.cx, c);
+    E.cx++;
+}
 //}}}
 // -- File IO -- {{{
 void editorOpen (char *filename) {
@@ -340,10 +358,23 @@ void editorProcessKeypress () {
     int c = editorReadKey();
 
     switch (c) {
+        case '\r':
+            break; /* TODO */
+
         case CTRL_KEY('q'):
             write(STDOUT_FILENO, "\x1b[2J", 4);
             write(STDOUT_FILENO, "\x1b[H", 3);
             exit(0);
+            break;
+
+        case BACKSPACE: case CTRL_KEY('h'):
+        case DEL_KEY:
+            /* TODO */
+            break;
+
+        case CTRL_KEY('l'):
+        case '\x1b':
+            /* TODO */
             break;
 
         case HOME_KEY:
@@ -372,6 +403,10 @@ void editorProcessKeypress () {
         case LEFT: case DOWN: case UP: case RIGHT:
         case ARROW_LEFT: case ARROW_DOWN: case ARROW_UP: case ARROW_RIGHT:
             editorMoveCursor(c);
+            break;
+
+        default:
+            editorInsertChar(c);
             break;
     }
 }
