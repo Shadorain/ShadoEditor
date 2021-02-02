@@ -21,6 +21,7 @@
 #define SHADO_VERSION "0.0.1"
 #define TAB_STOP 4
 #define SHOW_BAR 1
+#define QUIT_TIMES 1
 #define CTRL_KEY(k) ((k) & 0x1f)
 //}}}
 // -- Data -- {{{
@@ -255,6 +256,14 @@ void editorRowInsertChar (erow *row, int at, int c) {
     editorUpdateRow(row);
     E.dirty++;
 }
+
+void editorRowDelChar(erow *row, int at) {
+    if (at < 0 || at >= row->size) return;
+    memmove(&row->chars[at], &row->chars[at + 1], row->size - at);
+    row->size--;
+    editorUpdateRow(row);
+    E.dirty++;
+}
 //}}}
 // -- Editor Ops -- {{{
 void editorInsertChar (int c) {
@@ -262,6 +271,16 @@ void editorInsertChar (int c) {
         editorAppendRow("", 0);
     editorRowInsertChar(&E.row[E.cy], E.cx, c);
     E.cx++;
+}
+
+void editorDelChar () {
+    if (E.cy == E.numrows) return;
+
+    erow *row = &E.row[E.cy];
+    if (E.cx > 0) {
+        editorRowDelChar(row, E.cx - 1);
+        E.cx--;
+    }
 }
 //}}}
 // -- Status Bar -- {{{
@@ -404,6 +423,8 @@ void editorMoveCursor (int key) {
 }
 
 void editorProcessKeypress () {
+    static int quit_times = QUIT_TIMES;
+
     int c = editorReadKey();
 
     switch (c) {
@@ -411,6 +432,12 @@ void editorProcessKeypress () {
             break; /* TODO */
 
         case CTRL_KEY('q'):
+            if (E.dirty && quit_times > 0) {
+                editorSetStatusMessage("WARNING!! File has unsaved changes. "
+                        "Press C-q %d more times to quit", quit_times);
+                quit_times--;
+                return;
+            }
             write(STDOUT_FILENO, "\x1b[2J", 4);
             write(STDOUT_FILENO, "\x1b[H", 3);
             exit(0);
@@ -418,7 +445,8 @@ void editorProcessKeypress () {
 
         case BACKSPACE: case CTRL_KEY('h'):
         case DEL_KEY:
-            /* TODO */
+            if (c == DEL_KEY) editorMoveCursor(RIGHT);
+            editorDelChar();
             break;
 
         case CTRL_KEY('s'):
@@ -462,6 +490,7 @@ void editorProcessKeypress () {
             editorInsertChar(c);
             break;
     }
+    quit_times = QUIT_TIMES;
 }
 //}}}
 // -- Output -- {{{
