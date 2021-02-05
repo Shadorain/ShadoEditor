@@ -58,6 +58,7 @@ struct editorConfig {
 struct editorSyntax {
     char *filetype;
     char **filematch;
+    char **keywords;
     char *singleline_comment_start;
     int flags;
 };
@@ -84,6 +85,8 @@ enum editorKey {
 enum editorHighlight {
     HL_NORMAL = 0,
     HL_COMMENT,
+    HL_KEYWORD1,
+    HL_KEYWORD2,
     HL_NUMBER,
     HL_STRING,
     HL_MATCH,
@@ -99,11 +102,19 @@ struct abuf {
 //}}}
 // -- Filetypes -- {{{
 char *c_hl_extensions[] = { ".c", ".h", ".cpp", ".y", NULL };
+char *c_hl_keywords[] = { 
+    "switch", "if", "while", "for", "break", "continue", "return", "else",
+    "struct", "union", "enum", "typedef", "static", "enum", "class", "case",
+
+    "int|", "long|", "double|", "float|", "char|", "unsigned|", "signed|",
+    "void|", NULL,
+};
 
 struct editorSyntax HLDB[] = {
     {
         "c",
         c_hl_extensions,
+        c_hl_keywords,
         "//",
         HL_HIGHLIGHT_NUMS | HL_HIGHLIGHT_STRINGS,
     },
@@ -236,7 +247,7 @@ void abFree(struct abuf *ab) {
 }
 //}}}
 // -- Syntax highlighing -- {{{
-int is_separatator (int c) {
+int is_separator (int c) {
     return isspace(c) || c == '\0' || strchr(",.()+-/*=~%><>[];", c) != NULL;
 }
 
@@ -245,6 +256,8 @@ void editorUpdateSyntax (erow *row) {
     memset(row->hl, HL_NORMAL, row->rsize);
 
     if (E.syntax == NULL) return;
+
+    char **keywords = E.syntax->keywords;
 
     char *scs = E.syntax->singleline_comment_start;
     int scs_len = scs ? strlen(scs) : 0;
@@ -294,7 +307,28 @@ void editorUpdateSyntax (erow *row) {
                 prev_sep = 0;
                 continue;
             }
-        prev_sep = is_separatator(c);
+        // Keywords
+        if (prev_sep) {
+            int j;
+            for (j = 0; keywords[j]; j++) {
+                 int klen = strlen(keywords[j]);
+                 int kw2 = keywords[j][klen-1] == '|';
+                 if (kw2) klen--;
+
+                 if (!strncmp(&row->render[i], keywords[j], klen) &&
+                         is_separator(row->render[i + klen])) {
+                    memset(&row->hl[i], kw2 ? HL_KEYWORD2 : HL_KEYWORD1, klen);
+                    i += klen;
+                    break;
+                 }
+            }
+            if (keywords[j] != NULL) {
+                prev_sep = 0;
+                continue;
+            }
+        }
+
+        prev_sep = is_separator(c);
         i++;
     }
 }
@@ -302,6 +336,8 @@ void editorUpdateSyntax (erow *row) {
 int editorSyntaxToColor (int hl) {
     switch (hl) {
         case HL_COMMENT: return 36;
+        case HL_KEYWORD1: return 33;
+        case HL_KEYWORD2: return 32;
         case HL_NUMBER: return 31;
         case HL_STRING: return 35;
         case HL_MATCH: return 34;
@@ -853,7 +889,17 @@ void editorDrawRows (struct abuf *ab) {
             int cur_col = -1;
             int i;
             for (i = 0; i < len; i++)
-                if (hl[i] == HL_NORMAL) {
+                if (iscntrl(c[i])) {
+                    char sym = (c[i] <= 26) ? '@' + c[i] : '?';
+                    abAppend(ab, "\x1b[7m", 4);
+                    abAppend(ab, &sym, 1);
+                    abAppend(ab, "\x1b[m", 3);
+                    if (cur_col != -1) {
+                        char buf[16];
+                        int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", cur_col);
+                        abAppend(ab, buf, clen);
+                    }
+                } else if (hl[i] == HL_NORMAL) {
                     if (cur_col != -1) {
                         abAppend(ab, "\x1b[39m", 5);
                         cur_col = -1;
