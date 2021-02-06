@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-g -Wno-deprecated -Wall -Wextra -pedantic -std=c99 -pie
-OBJ=shado.o s_abuf.o s_synhl.o s_term.o s_rows.o s_ops.o
+OBJ=shado.o s_abuf.o s_synhl.o s_term.o s_rows.o s_ops.o s_bar.o s_io.o s_search.o s_input.o s_output.o
 BDIR=/usr/local/bin/
 
 shado: $(OBJ)

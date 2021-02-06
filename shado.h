@@ -149,5 +149,29 @@ void editorRowAppendString (erow *row, char *s, size_t len);
 void editorInsertChar (int c);
 void editorDelChar ();
 void editorInsertNewline ();
+
+/* |>- s_bar.c -<| */
+void editorDrawStatusBar (struct abuf *ab);
+void editorDrawMessageBar (struct abuf *ab);
+void editorSetStatusMessage (const char *fmt, ...);
+
+/* |>- s_io.c -<| */
+char *editorRowsToString (int *buflen);
+void editorOpen (char *filename);
+void editorSave ();
+
+/* |>- s_search.c -<| */
+void editorFindCallback (char *query, int key);
+void editorFind ();
+
+/* |>- s_input.c -<| */
+char *editorPrompt (char *prompt, void (*callback)(char *, int));
+void editorMoveCursor (int key);
+void editorProcessKeypress ();
+
+/* |>- s_output.c -<| */
+void editorScroll ();
+void editorDrawRows (struct abuf *ab);
+void editorRefreshScreen ();
 //}}}
 /* -------------------------------------------------------------------------- */
