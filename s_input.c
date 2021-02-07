@@ -1,6 +1,19 @@
 /* -------------------------------- s_input.c ------------------------------- */
 #include "shado.h"
 
+/* typedef void (*func_t)(func_args *args); */
+
+/* static const struct key_list { */
+/*     int	key; */
+/*     nv_func_T cmd_func; */
+/*     int mode; */
+/* } nv_cmds[] = { */
+/*     {NULL,      nv_error,	0}, */
+/*     {Ctrl_A,    nv_addsub,	0}, */
+/*     {Ctrl_B,    nv_page,	0}, */
+/*     {Ctrl_C,    nv_esc,		0}, */
+/* }; */
+
 char *editorPrompt (char *prompt, void (*callback)(char *, int)) {
     size_t bufsize = 128;
     char *buf = malloc(bufsize);
