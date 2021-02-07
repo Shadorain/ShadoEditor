@@ -1,7 +1,7 @@
 /* <| Shado :: a lightweight, modular, and modal editor |> */
 #include "shado.h"
 
-struct editorConfig E;
+struct globalState E;
 
 void initEditor () {
     E.cx = 0;
@@ -16,6 +16,8 @@ void initEditor () {
     E.stsmsg_time = 0;
     E.dirty = 0;
     E.syntax = NULL;
+
+    E.mode = 0;
 
     if (getWindowSize(&E.screenrows, &E.screencols) == -1) kill("getWindowSize");
     E.screenrows -= 2;

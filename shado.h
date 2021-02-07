@@ -18,7 +18,7 @@
 #include <unistd.h>
 //}}}
 // -- Externs -- {{{
-extern struct editorConfig E;
+extern struct globalState E;
 //}}}
 // -- Macros -- {{{
 #define SHADO_VERSION "0.0.1"
@@ -54,7 +54,7 @@ typedef struct erow {
 } erow;
 // }}}
 // --- Global State --- {{{
-struct editorConfig {
+struct globalState {
     int cx, cy;
     int rx;
     int rowoff;
@@ -66,9 +66,13 @@ struct editorConfig {
     char *filename;
     char stsmsg[80];
     time_t stsmsg_time;
-    erow *row;
     struct editorSyntax *syntax;
     struct termios orig_termios;
+    erow *row;
+
+    /* 0: normal, 1: insert, 2: visual, 3: visual_line,
+     * 4: visual_blk, 5: sreplace, 6: mrerplace */
+    int mode;
 };
 // }}}
 // --- Syntax --- {{{
