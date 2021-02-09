@@ -27,11 +27,17 @@ extern struct globalState E;
 #define SHOW_BAR 1
 #define QUIT_TIMES 1
 
-# define HL_HIGHLIGHT_NUMS (1<<0)
-# define HL_HIGHLIGHT_STRINGS (1<<1)
+#define HL_HIGHLIGHT_NUMS (1<<0)
+#define HL_HIGHLIGHT_STRINGS (1<<1)
 
 #define CTRL_KEY(k) ((k) & 0x1f)
 #define HLDB_ENTRIES (sizeof(HLDB)) / sizeof(HLDB[0])
+
+// Modes
+#define NORMAL 0
+#define INSERT 1
+#define VISUAL 2
+#define REPLACE 3
 //}}}
 // -- Data -- {{{
 // --- Append buffer --- {{{
@@ -98,22 +104,36 @@ enum editorHighlight {
 };
 // }}}
 // --- Keys --- {{{
-enum editorKey {
-    BACKSPACE = 127,
-    LEFT = 'h',
-    DOWN = 'j',
-    UP = 'k',
-    RIGHT = 'l',
-    ARROW_LEFT = 1000,
-    ARROW_DOWN,
-    ARROW_UP,
-    ARROW_RIGHT,
-    DEL_KEY,
-    HOME_KEY,
-    END_KEY,
-    PAGE_UP,
-    PAGE_DOWN,
-};
+#define LEFT 8
+#define DOWN 10
+#define UP 11
+#define RIGHT 12
+#define ARROW_LEFT 8
+#define ARROW_DOWN 10
+#define ARROW_UP 11
+#define ARROW_RIGHT 12
+#define DEL_KEY 53
+#define BACKSPACE 53
+#define HOME_KEY 53
+#define END_KEY 53
+#define PAGE_UP 53
+#define PAGE_DOWN 53
+/* enum ARROW_editorKey { */
+/*     BACKSPACE = 127, */
+/*     LEFT = 'h', */
+/*     DOWN = 'j', */
+/*     UP = 'k', */
+/*     RIGHT = 'l', */
+/*     ARROW_LEFT = 1000, */
+/*     ARROW_DOWN, */
+/*     ARROW_UP, */
+/*     ARROW_RIGHT, */
+/*     DEL_KEY, */
+/*     HOME_KEY, */
+/*     END_KEY, */
+/*     PAGE_UP, */
+/*     PAGE_DOWN, */
+/* }; */
 // }}}
 //}}}
 // -- Prototypes -- {{{
