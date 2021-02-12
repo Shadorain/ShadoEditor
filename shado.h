@@ -31,6 +31,7 @@ extern struct globalState E;
 #define HL_HIGHLIGHT_STRINGS (1<<1)
 
 #define CTRL_KEY(k) ((k) & 0x1f)
+#define LEN(v) (int)(sizeof(v) / sizeof(*v))
 #define HLDB_ENTRIES (sizeof(HLDB)) / sizeof(HLDB[0])
 
 // Modes
