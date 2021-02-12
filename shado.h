@@ -105,14 +105,14 @@ enum editorHighlight {
 };
 // }}}
 // --- Keys --- {{{
-#define LEFT 8
-#define DOWN 10
-#define UP 11
-#define RIGHT 12
-#define ARROW_LEFT 8
-#define ARROW_DOWN 10
-#define ARROW_UP 11
-#define ARROW_RIGHT 12
+#define LEFT 'h'
+#define DOWN 'j'
+#define UP 'k'
+#define RIGHT 'l'
+#define ARROW_LEFT 'h'
+#define ARROW_DOWN 'j'
+#define ARROW_UP 'k'
+#define ARROW_RIGHT 'l'
 #define DEL_KEY 53
 #define BACKSPACE 53
 #define HOME_KEY 53

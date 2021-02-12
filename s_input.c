@@ -7,6 +7,10 @@
 
 void n_append();
 void n_null();
+void n_move_left();
+void n_move_down();
+void n_move_up();
+void n_move_right();
 void n_return();
 void n_quit();
 
@@ -17,6 +21,10 @@ const struct mapping {
     handle cmd_func;
 } n_map[] = { 
         {'a', n_append},
+        {'h', n_move_left},
+        {'j', n_move_down},
+        {'k', n_move_up},
+        {'l', n_move_right},
         {'q', n_quit},
         {'\r', n_return},
 };
@@ -24,6 +32,22 @@ const struct mapping {
 void n_append() {
     editorMoveCursor(RIGHT);
     E.mode = INSERT;
+}
+
+void n_move_left() {
+    editorMoveCursor(LEFT);
+}
+
+void n_move_down() {
+    editorMoveCursor(DOWN);
+}
+
+void n_move_up() {
+    editorMoveCursor(UP);
+}
+
+void n_move_right() {
+    editorMoveCursor(RIGHT);
 }
 
 void n_null() {
