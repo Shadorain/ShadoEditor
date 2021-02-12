@@ -5,6 +5,8 @@
 /* } funcarg_t; */
 /* typedef void (*nfunc_t)(funcarg_t *args); */
 
+// -- Normal -- {{{
+// --- Prototypes --- {{{
 void n_append();
 void n_null();
 void n_move_left();
@@ -13,6 +15,7 @@ void n_move_up();
 void n_move_right();
 void n_return();
 void n_quit();
+// }}}
 
 typedef void (*handle)(void);
 
@@ -64,6 +67,48 @@ void n_quit() {
 void n_return() {
     editorInsertNewline();
 }
+//}}}
+// -- Insert -- {{{
+// --- Prototypes --- {{{
+void i_null();
+void i_move_left();
+void i_move_down();
+void i_move_up();
+void i_move_right();
+void i_return();
+// }}}
+const struct mapping i_map[] = { 
+    {'h', i_move_left},
+    {'j', i_move_down},
+    {'k', i_move_up},
+    {'l', i_move_right},
+    {'\r', i_return},
+};
+
+void i_move_left() {
+    editorMoveCursor(LEFT);
+}
+
+void i_move_down() {
+    editorMoveCursor(DOWN);
+}
+
+void i_move_up() {
+    editorMoveCursor(UP);
+}
+
+void i_move_right() {
+    editorMoveCursor(RIGHT);
+}
+
+void i_null() {
+    return;
+}
+
+void i_return() {
+    editorInsertNewline();
+}
+//}}}
 // -- Prompt -- {{{
 char *editorPrompt (char *prompt, void (*callback)(char *, int)) {
     size_t bufsize = 128;
@@ -145,9 +190,12 @@ void editorProcessKeypress () {
     int mode = E.mode;
 
     // Normal Mode
-    if (mode == 0)
+    if (mode == NORMAL)
         for (int i = 0; i < LEN(n_map); ++i)
             if (n_map[i].c == c) n_map[i].cmd_func();
+    if (mode == INSERT)
+        for (int i = 0; i < LEN(i_map); ++i)
+            if (i_map[i].c == c) i_map[i].cmd_func();
 
     quit_times = QUIT_TIMES;
 }
