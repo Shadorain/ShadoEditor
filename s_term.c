@@ -68,7 +68,7 @@ int editorReadKey () {
                 case 'H': return HOME_KEY;
                 case 'F': return END_KEY;
             }
-        return 27;
+        return 27; /* Escape key */
     } else
         return c;
 }

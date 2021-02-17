@@ -223,7 +223,7 @@ void editorMoveCursor (int key) {
 void editorProcessKeypress () {
     /* static int quit_times = QUIT_TIMES; */
 
-    char c = editorReadKey();
+    int c = editorReadKey();
     int mode = E.mode;
 
     /* Normal Mode */
