@@ -18,6 +18,7 @@ void initEditor () {
     E.syntax = NULL;
 
     E.mode = 0;
+    E.print_flag = 1;
 
     if (getWindowSize(&E.screenrows, &E.screencols) == -1) kill("getWindowSize");
     E.screenrows -= 2;

@@ -1,5 +1,5 @@
 /* -------------------------------- shado.h --------------------------------- */
-// -- Includes -- {{{
+/* -- Includes -- {{{ */
 #define _DEFAULT_SOURCE
 #define _BSD_SOURCE
 #define _GNU_SOURCE
@@ -16,11 +16,11 @@
 #include <termios.h>
 #include <time.h>
 #include <unistd.h>
-//}}}
-// -- Externs -- {{{
+/*}}}*/
+/* -- Externs -- {{{ */
 extern struct globalState E;
-//}}}
-// -- Macros -- {{{
+/*}}}*/
+/* -- Macros -- {{{ */
 #define SHADO_VERSION "0.0.1"
 
 #define TAB_STOP 4
@@ -34,22 +34,22 @@ extern struct globalState E;
 #define LEN(v) (int)(sizeof(v) / sizeof(*v))
 #define HLDB_ENTRIES (sizeof(HLDB)) / sizeof(HLDB[0])
 
-// Modes
+/* Modes */
 #define NORMAL 0
 #define INSERT 1
 #define VISUAL 2
 #define REPLACE 3
-//}}}
-// -- Data -- {{{
-// --- Append buffer --- {{{
+/*}}}*/
+/* -- Data -- {{{ */
+/* --- Append buffer --- {{{ */
 struct abuf {
     char *b;
     int len;
 };
 
 #define ABUF_INIT { NULL, 0 }
-// }}}
-// --- Row --- {{{
+/* }}} */
+/* --- Row --- {{{ */
 typedef struct erow {
     int idx;
     int size;
@@ -59,8 +59,8 @@ typedef struct erow {
     char *render;
     unsigned char *hl;
 } erow;
-// }}}
-// --- Global State --- {{{
+/* }}} */
+/* --- Global State --- {{{ */
 struct globalState {
     int cx, cy;
     int rx;
@@ -80,9 +80,12 @@ struct globalState {
     /* 0: normal, 1: insert, 2: visual, 3: visual_line,
      * 4: visual_blk, 5: sreplace, 6: mrerplace */
     int mode;
+
+    /* Makes sure not to print escape code keys */
+    int print_flag;
 };
-// }}}
-// --- Syntax --- {{{
+/* }}} */
+/* --- Syntax --- {{{ */
 struct editorSyntax {
     char *filetype;
     char **filematch;
@@ -103,41 +106,41 @@ enum editorHighlight {
     HL_STRING,
     HL_MATCH,
 };
-// }}}
-// --- Keys --- {{{
+/* }}} */
+/* --- Keys --- {{{ */
 #define LEFT 'h'
 #define DOWN 'j'
 #define UP 'k'
 #define RIGHT 'l'
-#define ARROW_LEFT 'h'
-#define ARROW_DOWN 'j'
-#define ARROW_UP 'k'
-#define ARROW_RIGHT 'l'
-#define DEL_KEY 53
-#define BACKSPACE 53
-#define HOME_KEY 53
-#define END_KEY 53
-#define PAGE_UP 53
-#define PAGE_DOWN 53
-/* enum ARROW_editorKey { */
-/*     BACKSPACE = 127, */
-/*     LEFT = 'h', */
-/*     DOWN = 'j', */
-/*     UP = 'k', */
-/*     RIGHT = 'l', */
-/*     ARROW_LEFT = 1000, */
-/*     ARROW_DOWN, */
-/*     ARROW_UP, */
-/*     ARROW_RIGHT, */
-/*     DEL_KEY, */
-/*     HOME_KEY, */
-/*     END_KEY, */
-/*     PAGE_UP, */
-/*     PAGE_DOWN, */
-/* }; */
-// }}}
-//}}}
-// -- Prototypes -- {{{
+/* #define ARROW_LEFT 1000 */
+/* #define ARROW_DOWN 1001 */
+/* #define ARROW_UP 1002 */
+/* #define ARROW_RIGHT 1003 */
+/* #define DEL_KEY 53 */
+/* #define BACKSPACE 53 */
+/* #define HOME_KEY 53 */
+/* #define END_KEY 53 */
+/* #define PAGE_UP 53 */
+/* #define PAGE_DOWN 53 */
+enum ARROW_editorKey {
+    BACKSPACE = 127,
+    /* LEFT = 'h', */
+    /* DOWN = 'j', */
+    /* UP = 'k', */
+    /* RIGHT = 'l', */
+    ARROW_LEFT = 1000,
+    ARROW_DOWN = 1001,
+    ARROW_UP = 1002,
+    ARROW_RIGHT = 1003,
+    DEL_KEY = 1004,
+    HOME_KEY = 1005,
+    END_KEY = 1006,
+    PAGE_UP = 1007,
+    PAGE_DOWN = 1008,
+};
+/* }}} */
+/*}}}*/
+/* -- Prototypes -- {{{ */
 void editorSetStatusMessage(const char *fmt, ...);
 void editorRefreshScreen();
 char *editorPrompt(char *prompt, void (*callback)(char *, int));
@@ -198,5 +201,6 @@ void editorProcessKeypress ();
 void editorScroll ();
 void editorDrawRows (struct abuf *ab);
 void editorRefreshScreen ();
-//}}}
+void changeCursorShape ();
+/*}}}*/
 /* -------------------------------------------------------------------------- */

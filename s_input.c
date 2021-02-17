@@ -1,13 +1,14 @@
 /* -------------------------------- s_input.c ------------------------------- */
 #include "shado.h"
+/* -- Normal -- {{{ */
 /* typedef struct func_args { */
 /*     int arg; */
 /* } funcarg_t; */
 /* typedef void (*nfunc_t)(funcarg_t *args); */
 
-// -- Normal -- {{{
-// --- Prototypes --- {{{
+/* --- Prototypes --- {{{ */
 void n_append();
+void n_insert();
 void n_null();
 void n_move_left();
 void n_move_down();
@@ -15,26 +16,32 @@ void n_move_up();
 void n_move_right();
 void n_return();
 void n_quit();
-// }}}
-
+/* }}} */
 typedef void (*handle)(void);
 
 const struct mapping {
-    char c;
+    int c;
     handle cmd_func;
 } n_map[] = { 
         {'a', n_append},
+        {'i', n_insert},
         {'h', n_move_left},
         {'j', n_move_down},
         {'k', n_move_up},
         {'l', n_move_right},
-        {'q', n_quit},
+        {CTRL_KEY('q'), n_quit},
         {'\r', n_return},
 };
 
 void n_append() {
     editorMoveCursor(RIGHT);
     E.mode = INSERT;
+    changeCursorShape();
+}
+
+void n_insert() {
+    E.mode = INSERT;
+    changeCursorShape();
 }
 
 void n_move_left() {
@@ -65,50 +72,79 @@ void n_quit() {
 }
 
 void n_return() {
-    editorInsertNewline();
+    /* TODO: make more like vims */
+    editorMoveCursor(DOWN);
 }
-//}}}
-// -- Insert -- {{{
-// --- Prototypes --- {{{
+/*}}}*/
+/* -- Insert -- {{{ */
+/* --- Prototypes --- {{{ */
 void i_null();
 void i_move_left();
 void i_move_down();
 void i_move_up();
 void i_move_right();
+void i_backspace();
+void i_delet();
+void i_escape();
 void i_return();
-// }}}
+/* }}} */
 const struct mapping i_map[] = { 
-    {'h', i_move_left},
-    {'j', i_move_down},
-    {'k', i_move_up},
-    {'l', i_move_right},
+    {1000, i_move_left},
+    {1001, i_move_down},
+    {1002, i_move_up},
+    {1003, i_move_right},
+    {27,   i_escape},
+    {127,  i_backspace},
     {'\r', i_return},
 };
 
 void i_move_left() {
     editorMoveCursor(LEFT);
+    E.print_flag = 0;
 }
 
 void i_move_down() {
     editorMoveCursor(DOWN);
+    E.print_flag = 0;
 }
 
 void i_move_up() {
     editorMoveCursor(UP);
+    E.print_flag = 0;
 }
 
 void i_move_right() {
     editorMoveCursor(RIGHT);
+    E.print_flag = 0;
 }
 
 void i_null() {
+    E.print_flag = 0;
     return;
+}
+
+void i_escape() {
+    editorMoveCursor(LEFT);
+    E.mode = NORMAL;
+    E.print_flag = 0;
+    changeCursorShape();
+}
+
+void i_backspace() {
+    editorDelChar();
+    E.print_flag = 0;
+}
+
+void i_delete() {
+    editorMoveCursor(RIGHT);
+    editorDelChar();
+    E.print_flag = 0;
 }
 
 void i_return() {
     editorInsertNewline();
 }
-//}}}
+/*}}}*/
 // -- Prompt -- {{{
 char *editorPrompt (char *prompt, void (*callback)(char *, int)) {
     size_t bufsize = 128;
@@ -146,7 +182,7 @@ char *editorPrompt (char *prompt, void (*callback)(char *, int)) {
     }
 }
 //}}}
-// -- Move Cursor -- {{{
+/* -- Move Cursor -- {{{ */
 void editorMoveCursor (int key) {
     erow *row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
 
@@ -154,25 +190,26 @@ void editorMoveCursor (int key) {
         case LEFT: //case ARROW_LEFT:
             if (E.cx != 0)
                 E.cx--;
-            else if (E.cy > 0) {
-                E.cy--;
-                E.cx = E.row[E.cy].size;
-            }
+            /* else if (E.cy > 0) { */
+            /*     E.cy--; */
+            /*     E.cx = E.row[E.cy].size; */
+            /* } */
             break;
         case DOWN: //case ARROW_DOWN:
             if (E.cy < E.numrows)
                 E.cy++;
             break;
-        case UP: //case ARROW_UP: if (E.cy != 0)
+        case UP: //case ARROW_UP:
+            if (E.cy != 0)
                 E.cy--;
             break;
         case RIGHT: //case ARROW_RIGHT:
             if (row && E.cx < row->size)
                 E.cx++;
-            else if (row && E.cx == row->size) {
-                E.cy++;
-                E.cx = 0;
-            }
+            /* else if (row && E.cx == row->size) { */
+            /*     E.cy++; */
+            /*     E.cx = 0; */
+            /* } */
             break;
     }
 
@@ -181,23 +218,33 @@ void editorMoveCursor (int key) {
     if (E.cx > rowlen)
         E.cx = rowlen;
 }
-//}}}
-// -- Process Keypress -- {{{
+/*}}}*/
+/* -- Process Keypress -- {{{ */
 void editorProcessKeypress () {
-    static int quit_times = QUIT_TIMES;
+    /* static int quit_times = QUIT_TIMES; */
 
     char c = editorReadKey();
     int mode = E.mode;
 
-    // Normal Mode
+    /* Normal Mode */
     if (mode == NORMAL)
         for (int i = 0; i < LEN(n_map); ++i)
-            if (n_map[i].c == c) n_map[i].cmd_func();
-    if (mode == INSERT)
-        for (int i = 0; i < LEN(i_map); ++i)
-            if (i_map[i].c == c) i_map[i].cmd_func();
+            if (n_map[i].c == c) {
+                n_map[i].cmd_func();
+                break;
+            }
+    if (mode == INSERT) {
+        for (int j = 0; j < LEN(i_map); ++j)
+            if (i_map[j].c == c) {
+                i_map[j].cmd_func();
+                break;
+            }
+        if (E.mode == INSERT && E.print_flag == 1) // secondary check just incase
+            editorInsertChar(c);
+    }
 
-    quit_times = QUIT_TIMES;
+    E.print_flag = 1;
+    /* quit_times = QUIT_TIMES; */
 }
 
         /* switch (c) { */
@@ -267,5 +314,5 @@ void editorProcessKeypress () {
         /*         editorInsertChar(c); */
         /*         break; */
         /* } */
-//}}}
+/*}}}*/
 /* -------------------------------------------------------------------------- */

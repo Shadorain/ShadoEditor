@@ -82,8 +82,8 @@ void editorDrawRows (struct abuf *ab) {
 void editorRefreshScreen () {
     editorScroll();
     struct abuf ab = ABUF_INIT;
-    abAppend(&ab, "\x1b[?25l", 6); // Hide Cursor
-    abAppend(&ab, "\x1b[H", 3); // Reposition Cursor
+    abAppend(&ab, "\x1b[?25l", 6); /* Hide Cursor */
+    abAppend(&ab, "\x1b[H", 3); /* Reposition Cursor */
 
     editorDrawRows(&ab);
     editorDrawStatusBar(&ab);
@@ -93,9 +93,14 @@ void editorRefreshScreen () {
     snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
                                               (E.rx - E.coloff) + 1);
     abAppend(&ab, buf, strlen(buf));
-    abAppend(&ab, "\x1b[?25h", 6); // Unhide Cursor
+    abAppend(&ab, "\x1b[?25h", 6); /* Unhide Cursor */
 
     write(STDOUT_FILENO, ab.b, ab.len);
     abFree(&ab);
+}
+
+void changeCursorShape () {
+    if(E.mode == 1) write(STDOUT_FILENO, "\x1b[6 q", 5);
+    else write(STDOUT_FILENO, "\x1b[2 q", 5);
 }
 /* -------------------------------------------------------------------------- */
