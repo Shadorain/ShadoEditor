@@ -8,6 +8,17 @@
 
 /* --- Prototypes --- {{{ */
 void n_append();
+void n_eappend();
+void n_nldown();
+void n_nlup();
+void n_cursdel();
+void n_pcursdel();
+void n_nlup();
+void n_ctree();
+void n_dtree();
+void n_gtree();
+void n_ytree();
+void n_ztree();
 void n_insert();
 void n_null();
 void n_move_left();
@@ -24,7 +35,17 @@ const struct mapping {
     handle cmd_func;
 } n_map[] = { 
         {'a', n_append},
+        {'A', n_eappend},
         {'i', n_insert},
+        {'o', n_nldown},
+        {'O', n_nlup},
+        {'x', n_cursdel},
+        {'X', n_pcursdel},
+        {'c', n_ctree},
+        {'d', n_dtree},
+        {'g', n_gtree},
+        {'y', n_ytree},
+        {'z', n_ztree},
         {'h', n_move_left},
         {'j', n_move_down},
         {'k', n_move_up},
@@ -39,10 +60,47 @@ void n_append() {
     changeCursorShape();
 }
 
+void n_eappend() {
+    editorMoveCursor(END_KEY);
+    E.mode = INSERT;
+    changeCursorShape();
+}
+
 void n_insert() {
     E.mode = INSERT;
     changeCursorShape();
 }
+
+void n_nldown() {
+    editorMoveCursor(END_KEY);
+    editorInsertNewline();
+    E.mode = INSERT;
+    changeCursorShape();
+}
+
+void n_nlup() {
+    editorMoveCursor(UP);
+    editorMoveCursor(END_KEY);
+    editorInsertNewline();
+    E.mode = INSERT;
+    changeCursorShape();
+}
+
+void n_cursdel() {
+    editorMoveCursor(RIGHT);
+    editorDelChar();
+}
+
+void n_pcursdel() {
+    editorDelChar();
+
+}
+
+void n_ctree() { return; }
+void n_dtree() { return; }
+void n_gtree() { return; }
+void n_ytree() { return; }
+void n_ztree() { return; }
 
 void n_move_left() {
     editorMoveCursor(LEFT);
@@ -143,6 +201,7 @@ void i_delete() {
 
 void i_return() {
     editorInsertNewline();
+    E.print_flag = 0;
 }
 /*}}}*/
 // -- Prompt -- {{{
@@ -187,7 +246,7 @@ void editorMoveCursor (int key) {
     erow *row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
 
     switch (key) {
-        case LEFT: //case ARROW_LEFT:
+        case LEFT:
             if (E.cx != 0)
                 E.cx--;
             /* else if (E.cy > 0) { */
@@ -195,21 +254,43 @@ void editorMoveCursor (int key) {
             /*     E.cx = E.row[E.cy].size; */
             /* } */
             break;
-        case DOWN: //case ARROW_DOWN:
+        case DOWN:
             if (E.cy < E.numrows)
                 E.cy++;
             break;
-        case UP: //case ARROW_UP:
+        case UP:
             if (E.cy != 0)
                 E.cy--;
             break;
-        case RIGHT: //case ARROW_RIGHT:
+        case RIGHT:
             if (row && E.cx < row->size)
                 E.cx++;
             /* else if (row && E.cx == row->size) { */
             /*     E.cy++; */
             /*     E.cx = 0; */
             /* } */
+            break;
+
+        case HOME_KEY:
+            E.cx = 0;
+            break;
+        case END_KEY:
+            if (E.cy < E.numrows)
+                E.cx = E.row[E.cy].size;
+            break;
+
+        case PAGE_UP:
+            E.cy = E.rowoff;
+            int times = E.screenrows;
+            while (times--)
+                editorMoveCursor(UP);
+            break;
+        case PAGE_DOWN:
+            E.cy = E.rowoff + E.screenrows - 1;
+            if (E.cy > E.numrows) E.cy = E.numrows;
+            times = E.screenrows;
+            while (times--)
+                editorMoveCursor(DOWN);
             break;
     }
 
