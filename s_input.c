@@ -1,27 +1,27 @@
 /* -------------------------------- s_input.c ------------------------------- */
 #include "shado.h"
 // -- Prompt -- {{{
-char *editorPrompt (char *prompt, void (*callback)(char *, int)) {
+char *prompt_line (char *prompt, void (*callback)(char *, int)) {
     size_t bufsize = 128;
     char *buf = malloc(bufsize);
     size_t buflen = 0;
     buf[0] = '\0';
 
     while (1) {
-        editorSetStatusMessage(prompt, buf);
-        editorRefreshScreen();
+        set_sts_msg(prompt, buf);
+        refresh_screen();
 
-        int c = editorReadKey();
+        int c = read_keypress();
         if (c == DEL_KEY || c == CTRL_KEY('h') || c == BACKSPACE) {
             if (buflen != 0) buf[--buflen] = '\0';
         } else if (c == '\x1b') {
-            editorSetStatusMessage("");
+            set_sts_msg("");
             if (callback) callback(buf, c);
             free(buf);
             return NULL;
         } else if (c == '\r') {
             if (buflen != 0) {
-                editorSetStatusMessage("");
+                set_sts_msg("");
                 if (callback) callback(buf, c);
                 return buf;
             }
@@ -38,7 +38,7 @@ char *editorPrompt (char *prompt, void (*callback)(char *, int)) {
 }
 //}}}
 /* -- Move Cursor -- {{{ */
-void editorMoveCursor (int key) {
+void move_cursor (int key) {
     erow *row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
 
     switch (key) {
@@ -79,14 +79,14 @@ void editorMoveCursor (int key) {
             E.cy = E.rowoff;
             int times = E.screenrows;
             while (times--)
-                editorMoveCursor(UP);
+                move_cursor(UP);
             break;
         case PAGE_DOWN:
             E.cy = E.rowoff + E.screenrows - 1;
             if (E.cy > E.numrows) E.cy = E.numrows;
             times = E.screenrows;
             while (times--)
-                editorMoveCursor(DOWN);
+                move_cursor(DOWN);
             break;
     }
 

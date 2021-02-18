@@ -24,7 +24,7 @@ static int is_separator (int c) {
     return isspace(c) || c == '\0' || strchr(",.()+-/*=~%><>[];", c) != NULL;
 }
 
-void editorUpdateSyntax (erow *row) {
+void update_syntax (erow *row) {
     row->hl = realloc(row->hl, row->rsize);
     memset(row->hl, HL_NORMAL, row->rsize);
 
@@ -132,10 +132,10 @@ void editorUpdateSyntax (erow *row) {
     int changed = (row->hl_open_comment != in_comment);
     row->hl_open_comment = in_comment;
     if (changed && row->idx + 1 < E.numrows)
-        editorUpdateSyntax(&E.row[row->idx + 1]);
+        update_syntax(&E.row[row->idx + 1]);
 }
 
-int editorSyntaxToColor (int hl) {
+int syntax_to_color (int hl) {
     switch (hl) {
         case HL_COMMENT: case HL_MLCOMMENT: return 36;
         case HL_KEYWORD1: return 33;
@@ -147,7 +147,7 @@ int editorSyntaxToColor (int hl) {
     }
 }
 
-void editorSelectSyntaxHighlight () {
+void select_syntax_hl () {
     E.syntax = NULL;
     if (E.filename == NULL) return;
 
@@ -162,7 +162,7 @@ void editorSelectSyntaxHighlight () {
                 E.syntax = s;
                 int filerow;
                 for (filerow = 0; filerow < E.numrows; filerow++)
-                    editorUpdateSyntax(&E.row[filerow]);
+                    update_syntax(&E.row[filerow]);
                 return;
             }
             i++;

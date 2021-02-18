@@ -1,7 +1,7 @@
 /* -------------------------------- s_abuf.c -------------------------------- */
 #include "shado.h"
 
-void abAppend(struct abuf *ab, const char *s, int len) {
+void ab_append(struct abuf *ab, const char *s, int len) {
     char *new = realloc(ab->b, ab->len + len);
 
     if (new == NULL) return;
@@ -10,7 +10,7 @@ void abAppend(struct abuf *ab, const char *s, int len) {
     ab->len += len;
 }
 
-void abFree(struct abuf *ab) {
+void ab_free(struct abuf *ab) {
     free(ab->b);
 }
 /* -------------------------------------------------------------------------- */

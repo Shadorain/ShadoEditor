@@ -20,19 +20,19 @@ void initEditor () {
     E.mode = 0;
     E.print_flag = 1;
 
-    if (getWindowSize(&E.screenrows, &E.screencols) == -1) kill("getWindowSize");
+    if (get_win_size(&E.screenrows, &E.screencols) == -1) kill("getWindowSize");
     E.screenrows -= 2;
 }
 
 int main (int argc, char *argv[]) {
-    enterRawMode();
+    enable_raw();
     initEditor();
-    if (argc >= 2) editorOpen(argv[1]);
+    if (argc >= 2) open_file(argv[1]);
 
-    editorSetStatusMessage("HELP: C-q: Quit | C-s: Save | C-f: Find");
+    set_sts_msg("HELP: C-q: Quit | C-s: Save | C-f: Find");
 
     while (1) {
-        editorRefreshScreen();
+        refresh_screen();
         process_keypress();
     }
     return 0;

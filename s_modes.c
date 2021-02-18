@@ -75,80 +75,80 @@ const struct mapping n_map[] = {
 /* }; */
 
 void n_append() {
-    editorMoveCursor(RIGHT);
+    move_cursor(RIGHT);
     E.mode = INSERT;
-    changeCursorShape();
+    set_cursor_type();
 }
 
 void n_eappend() {
-    editorMoveCursor(END_KEY);
+    move_cursor(END_KEY);
     E.mode = INSERT;
-    changeCursorShape();
+    set_cursor_type();
 }
 
 void n_insert() {
     E.mode = INSERT;
-    changeCursorShape();
+    set_cursor_type();
 }
 
 void n_nldown() {
-    editorMoveCursor(END_KEY);
-    editorInsertNewline();
+    move_cursor(END_KEY);
+    insert_nl();
     E.mode = INSERT;
-    changeCursorShape();
+    set_cursor_type();
 }
 
 void n_nlup() {
-    editorMoveCursor(UP);
-    editorMoveCursor(END_KEY);
-    editorInsertNewline();
+    move_cursor(UP);
+    move_cursor(END_KEY);
+    insert_nl();
     E.mode = INSERT;
-    changeCursorShape();
+    set_cursor_type();
 }
 
 void n_cursdel() {
-    editorMoveCursor(RIGHT);
-    editorDelChar();
+    move_cursor(RIGHT);
+    delete_char();
 }
 
 void n_pcursdel() {
-    editorDelChar();
+    delete_char();
 }
 
 void n_idel() {
-    editorMoveCursor(RIGHT);
-    editorDelChar();
+    move_cursor(RIGHT);
+    delete_char();
     E.mode = INSERT;
-    changeCursorShape();
+    set_cursor_type();
 }
 
 void n_iedel() {
-    editorDelChar();
+    delete_char();
     E.mode = INSERT;
-    changeCursorShape();
+    set_cursor_type();
 }
 
-void n_gototop() { editorMoveCursor(PAGE_UP); }
-void n_gotobottom() { editorMoveCursor(PAGE_DOWN); }
+void n_gototop() { move_cursor(PAGE_UP); }
+void n_gotobottom() { move_cursor(PAGE_DOWN); }
 
 void n_gtree() { return; }
 void n_ytree() { return; }
 void n_ztree() { return; }
 
 void n_move_left() {
-    editorMoveCursor(LEFT);
+    move_cursor(LEFT);
 }
 
 void n_move_down() {
-    editorMoveCursor(DOWN);
+    move_cursor(DOWN);
 }
 
 void n_move_up() {
-    editorMoveCursor(UP);
+    move_cursor(UP);
 }
 
 void n_move_right() {
-    editorMoveCursor(RIGHT);
+    move_cursor(RIGHT);
 }
 
 void n_null() {
@@ -164,7 +164,7 @@ void n_quit() {
 
 void n_return() {
     /* TODO: make more like vims */
-    editorMoveCursor(DOWN);
+    move_cursor(DOWN);
 }
 /* --- Delete --- {{{ */
 const struct mapping n_dmap[] = {
@@ -177,9 +177,9 @@ const struct mapping n_dmap[] = {
 
 void n_dtree() { 
     E.mode = MISC;
-    changeCursorShape();
+    set_cursor_type();
 
-    int c = editorReadKey();
+    int c = read_keypress();
     for (int i = 0; i < LEN(n_dmap); ++i)
         if (n_dmap[i].c == c) {
             n_dmap[i].cmd_func();
@@ -187,26 +187,26 @@ void n_dtree() {
         }
 
     E.mode = NORMAL;
-    changeCursorShape();
+    set_cursor_type();
 }
 
-void n_dline() { editorDelRow(E.cy); }
+void n_dline() { delete_row(E.cy); }
 void n_ddown() {
-    editorDelRow(E.cy);
-    editorDelRow(E.cy);
+    delete_row(E.cy);
+    delete_row(E.cy);
 }
 void n_dup() {
-    editorDelRow(E.cy);
-    editorMoveCursor(UP);
-    editorDelRow(E.cy);
+    delete_row(E.cy);
+    move_cursor(UP);
+    delete_row(E.cy);
 }
 void n_dleft() {
-    editorDelChar();
+    delete_char();
 }
 void n_dright() {
-    editorMoveCursor(RIGHT);
-    editorMoveCursor(RIGHT);
-    editorDelChar();
+    move_cursor(RIGHT);
+    move_cursor(RIGHT);
+    delete_char();
 }
 /*  }}} */
 /* --- Change --- {{{ */
@@ -220,9 +220,9 @@ const struct mapping n_cmap[] = {
 
 void n_ctree() { 
     E.mode = MISC;
-    changeCursorShape();
+    set_cursor_type();
 
-    int c = editorReadKey();
+    int c = read_keypress();
     for (int i = 0; i < LEN(n_cmap); ++i)
         if (n_cmap[i].c == c) {
             n_cmap[i].cmd_func();
@@ -231,40 +231,40 @@ void n_ctree() {
         } else {
             E.mode = NORMAL;
         }
-    changeCursorShape();
+    set_cursor_type();
 }
 
 void n_cline() {
-    editorDelRow(E.cy);
-    editorMoveCursor(UP);
-    editorInsertNewline();
+    delete_row(E.cy);
+    move_cursor(UP);
+    insert_nl();
     E.mode = INSERT;
-    changeCursorShape();
+    set_cursor_type();
 }
 void n_cdown() {
-    editorDelRow(E.cy);
-    editorDelRow(E.cy);
+    delete_row(E.cy);
+    delete_row(E.cy);
     E.mode = INSERT;
-    changeCursorShape();
+    set_cursor_type();
 }
 void n_cup() {
-    editorDelRow(E.cy);
-    editorMoveCursor(UP);
-    editorDelRow(E.cy);
+    delete_row(E.cy);
+    move_cursor(UP);
+    delete_row(E.cy);
     E.mode = INSERT;
-    changeCursorShape();
+    set_cursor_type();
 }
 void n_cleft() {
-    editorDelChar();
+    delete_char();
     E.mode = INSERT;
-    changeCursorShape();
+    set_cursor_type();
 }
 void n_cright() {
-    editorMoveCursor(RIGHT);
-    editorMoveCursor(RIGHT);
-    editorDelChar();
+    move_cursor(RIGHT);
+    move_cursor(RIGHT);
+    delete_char();
     E.mode = INSERT;
-    changeCursorShape();
+    set_cursor_type();
 }
 /*  }}} */
 /*}}}*/
@@ -291,22 +291,22 @@ const struct mapping i_map[] = {
 };
 
 void i_move_left() {
-    editorMoveCursor(LEFT);
+    move_cursor(LEFT);
     E.print_flag = 0;
 }
 
 void i_move_down() {
-    editorMoveCursor(DOWN);
+    move_cursor(DOWN);
     E.print_flag = 0;
 }
 
 void i_move_up() {
-    editorMoveCursor(UP);
+    move_cursor(UP);
     E.print_flag = 0;
 }
 
 void i_move_right() {
-    editorMoveCursor(RIGHT);
+    move_cursor(RIGHT);
     E.print_flag = 0;
 }
 
@@ -316,33 +316,36 @@ void i_null() {
 }
 
 void i_escape() {
-    editorMoveCursor(LEFT);
+    move_cursor(LEFT);
     E.mode = NORMAL;
     E.print_flag = 0;
-    changeCursorShape();
+    set_cursor_type();
 }
 
 void i_backspace() {
-    editorDelChar();
+    delete_char();
     E.print_flag = 0;
 }
 
 void i_delete() {
-    editorMoveCursor(RIGHT);
-    editorDelChar();
+    move_cursor(RIGHT);
+    delete_char();
     E.print_flag = 0;
 }
 
 void i_return() {
-    editorInsertNewline();
+    insert_nl();
     E.print_flag = 0;
 }
+/*}}}*/
+/* -- Binary search -- {{{ */
+
 /*}}}*/
 /* -- Process Keypress -- {{{ */
 void process_keypress () {
     /* static int quit_times = QUIT_TIMES; */
 
-    int c = editorReadKey();
+    int c = read_keypress();
     int mode = E.mode;
 
     /* Normal Mode */
@@ -360,7 +363,7 @@ void process_keypress () {
                 break;
             }
         if (E.mode == INSERT && E.print_flag == 1) // secondary check just incase
-            editorInsertChar(c);
+            insert_char(c);
     }
 
     E.print_flag = 1;
@@ -369,7 +372,7 @@ void process_keypress () {
 
 /*     case CTRL_KEY('q'): */
 /*         if (E.dirty && quit_times > 0) { */
-/*             editorSetStatusMessage("WARNING!! File has unsaved changes. " */
+/*             set_sts_msg("WARNING!! File has unsaved changes. " */
 /*                     "Press C-q %d more times to quit", quit_times); */
 /*             quit_times--; */
 /*             return; */
@@ -379,10 +382,10 @@ void process_keypress () {
 /*         exit(0); */
 /*         break; */
 /*     case CTRL_KEY('s'): */
-/*         editorSave(); */
+/*         save_file(); */
 /*         break; */
 /*     case CTRL_KEY('f'): */
-/*         editorFind(); */
+/*         search(); */
 /*         break; */
 /*}}}*/
 /* -------------------------------------------------------------------------- */

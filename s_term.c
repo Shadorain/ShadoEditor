@@ -9,14 +9,14 @@ void kill (const char *s) {
     exit(1);
 }
 
-void disableRawMode () { // Restores on exit to terminal's orig attributes
+void disable_raw () { // Restores on exit to terminal's orig attributes
     if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &E.orig_termios) == -1)
         kill("tcsetattr");
 }
 
-void enterRawMode () {
+void enable_raw () {
     if (tcgetattr(STDIN_FILENO, &E.orig_termios) == -1) kill("tcgetarr");
-    atexit(disableRawMode); // at exit, do ...
+    atexit(disable_raw); // at exit, do ...
 
     struct termios raw = E.orig_termios;
     raw.c_iflag &= ~(IXON | ICRNL | BRKINT | INPCK | ISTRIP);
@@ -29,7 +29,7 @@ void enterRawMode () {
     if(tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) kill("tcsetattr");
 }
 
-int editorReadKey () {
+int read_keypress () {
     int nread;
     char c;
     // loop: read 1B into `c` from stdin
@@ -73,7 +73,7 @@ int editorReadKey () {
         return c;
 }
 
-int getCursorPosition (int *rows, int *cols) {
+int get_curs_pos (int *rows, int *cols) {
     char buf[32];
     unsigned int i = 0;
 
@@ -93,12 +93,12 @@ int getCursorPosition (int *rows, int *cols) {
     return 0;
 }
 
-int getWindowSize (int *rows, int *cols) {
+int get_win_size (int *rows, int *cols) {
     struct winsize ws;
 
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1 || ws.ws_col == 0) {
         if (write(STDOUT_FILENO, "\x1b[999C\x1b[999B", 12) != 12) return -1;
-        return getCursorPosition(rows, cols);
+        return get_curs_pos(rows, cols);
     } else {
         *cols = ws.ws_col;
         *rows = ws.ws_row;

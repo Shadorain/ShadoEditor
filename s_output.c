@@ -1,10 +1,10 @@
 /* ------------------------------- s_output.c ------------------------------- */
 #include "shado.h"
 
-void editorScroll () {
+void scroll () {
     E.rx = 0;
     if (E.cy < E.numrows)
-        E.rx = editorRowCxToRx(&E.row[E.cy], E.cx);
+        E.rx = row_cx_to_rx(&E.row[E.cy], E.cx);
 
     if (E.cy < E.rowoff)
         E.rowoff = E.cy;
@@ -16,7 +16,7 @@ void editorScroll () {
         E.coloff = E.rx - E.screencols + 1;
 }
 
-void editorDrawRows (struct abuf *ab) {
+void draw_rows (struct abuf *ab) {
     int y;
     for (y = 0; y < E.screenrows; y++) {
         int filerow = y + E.rowoff;
@@ -28,13 +28,13 @@ void editorDrawRows (struct abuf *ab) {
                 if (welcomelen > E.screencols) welcomelen = E.screencols;
                 int padding = (E.screencols - welcomelen) / 2;
                 if (padding) {
-                    abAppend(ab, "~", 1);
+                    ab_append(ab, "~", 1);
                     padding--;
                 }
-                while (padding--) abAppend(ab, " ", 1);
-                abAppend(ab, welcome, welcomelen);
+                while (padding--) ab_append(ab, " ", 1);
+                ab_append(ab, welcome, welcomelen);
             } else
-                abAppend(ab, "~", 1);
+                ab_append(ab, "~", 1);
         } else {
             int len = E.row[filerow].rsize - E.coloff;
             if (len < 0) len = 0;
@@ -47,59 +47,59 @@ void editorDrawRows (struct abuf *ab) {
             for (i = 0; i < len; i++)
                 if (iscntrl(c[i])) {
                     char sym = (c[i] <= 26) ? '@' + c[i] : '?';
-                    abAppend(ab, "\x1b[7m", 4);
-                    abAppend(ab, &sym, 1);
-                    abAppend(ab, "\x1b[m", 3);
+                    ab_append(ab, "\x1b[7m", 4);
+                    ab_append(ab, &sym, 1);
+                    ab_append(ab, "\x1b[m", 3);
                     if (cur_col != -1) {
                         char buf[16];
                         int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", cur_col);
-                        abAppend(ab, buf, clen);
+                        ab_append(ab, buf, clen);
                     }
                 } else if (hl[i] == HL_NORMAL) {
                     if (cur_col != -1) {
-                        abAppend(ab, "\x1b[39m", 5);
+                        ab_append(ab, "\x1b[39m", 5);
                         cur_col = -1;
                     }
-                    abAppend(ab, &c[i], 1);
+                    ab_append(ab, &c[i], 1);
                 } else {
-                    int color = editorSyntaxToColor(hl[i]);
+                    int color = syntax_to_color(hl[i]);
                     if (color != cur_col) {
                         cur_col = color;
                         char buf[16];
                         int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", color);
-                        abAppend(ab, buf, clen);
+                        ab_append(ab, buf, clen);
                     }
-                    abAppend(ab, &c[i], 1);
+                    ab_append(ab, &c[i], 1);
                 }
-            abAppend(ab, "\x1b[39m", 5);
+            ab_append(ab, "\x1b[39m", 5);
         }
-        abAppend(ab, "\x1b[K", 3);
+        ab_append(ab, "\x1b[K", 3);
         /* if (y < E.screenrows - 1) */
-        abAppend(ab, "\r\n", 2);
+        ab_append(ab, "\r\n", 2);
     }
 }
 
-void editorRefreshScreen () {
-    editorScroll();
+void refresh_screen () {
+    scroll();
     struct abuf ab = ABUF_INIT;
-    abAppend(&ab, "\x1b[?25l", 6); /* Hide Cursor */
-    abAppend(&ab, "\x1b[H", 3); /* Reposition Cursor */
+    ab_append(&ab, "\x1b[?25l", 6); /* Hide Cursor */
+    ab_append(&ab, "\x1b[H", 3); /* Reposition Cursor */
 
-    editorDrawRows(&ab);
-    editorDrawStatusBar(&ab);
-    editorDrawMessageBar(&ab);
+    draw_rows(&ab);
+    draw_sts_bar(&ab);
+    draw_msg_bar(&ab);
 
     char buf[32];
     snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
                                               (E.rx - E.coloff) + 1);
-    abAppend(&ab, buf, strlen(buf));
-    abAppend(&ab, "\x1b[?25h", 6); /* Unhide Cursor */
+    ab_append(&ab, buf, strlen(buf));
+    ab_append(&ab, "\x1b[?25h", 6); /* Unhide Cursor */
 
     write(STDOUT_FILENO, ab.b, ab.len);
-    abFree(&ab);
+    ab_free(&ab);
 }
 
-void changeCursorShape () {
+void set_cursor_type () {
     if(E.mode == 1) write(STDOUT_FILENO, "\x1b[6 q", 5);
     else if(E.mode == 10) write(STDOUT_FILENO, "\x1b[4 q", 5);
     else write(STDOUT_FILENO, "\x1b[2 q", 5);

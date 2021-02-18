@@ -160,66 +160,66 @@ enum ARROW_editorKey {
 /* }}} */
 /*}}}*/
 /* -- Prototypes -- {{{ */
-void editorSetStatusMessage(const char *fmt, ...);
-void editorRefreshScreen();
-char *editorPrompt(char *prompt, void (*callback)(char *, int));
+void set_sts_msg(const char *fmt, ...);
+void refresh_screen();
+char *prompt_line(char *prompt, void (*callback)(char *, int));
 
 /* |>- s_abuf.c -<| */
-void abAppend(struct abuf *ab, const char *s, int len);
-void abFree(struct abuf *ab);
+void ab_append(struct abuf *ab, const char *s, int len);
+void ab_free(struct abuf *ab);
 
 /* |>- s_synhl.c -<| */
-void editorUpdateSyntax (erow *row);
-int editorSyntaxToColor (int hl);
-void editorSelectSyntaxHighlight ();
+void update_syntax (erow *row);
+int syntax_to_color (int hl);
+void select_syntax_hl ();
 
 /* |>- s_term.c -<| */
 void kill (const char *s);
-void disableRawMode ();
-void enterRawMode ();
-int editorReadKey ();
-int getCursorPosition (int *rows, int *cols);
-int getWindowSize (int *rows, int *cols);
+void disable_raw ();
+void enable_raw ();
+int read_keypress ();
+int get_curs_pos (int *rows, int *cols);
+int get_win_size (int *rows, int *cols);
 
 /* |>- s_rows.c -<| */
-int editorRowCxToRx (erow *row, int cx);
-int editorRowRxToCx (erow *row, int rx);
-void editorUpdateRow (erow *row);
-void editorInsertRow (int at, char *s, size_t len);
-void editorFreeRow (erow *row);
-void editorDelRow (int at);
-void editorRowInsertChar (erow *row, int at, int c);
-void editorRowDelChar(erow *row, int at);
-void editorRowAppendString (erow *row, char *s, size_t len);
+int row_cx_to_rx (erow *row, int cx);
+int row_rx_to_cx (erow *row, int rx);
+void update_row (erow *row);
+void insert_row (int at, char *s, size_t len);
+void free_row (erow *row);
+void delete_row (int at);
+void insert_char_row (erow *row, int at, int c);
+void delete_char_row(erow *row, int at);
+void append_string_row (erow *row, char *s, size_t len);
 
 /* |>- s_ops.c -<| */
-void editorInsertChar (int c);
-void editorDelChar ();
-void editorInsertNewline ();
+void insert_char (int c);
+void delete_char ();
+void insert_nl ();
 
 /* |>- s_bar.c -<| */
-void editorDrawStatusBar (struct abuf *ab);
-void editorDrawMessageBar (struct abuf *ab);
-void editorSetStatusMessage (const char *fmt, ...);
+void draw_sts_bar (struct abuf *ab);
+void draw_msg_bar (struct abuf *ab);
+void set_sts_msg (const char *fmt, ...);
 
 /* |>- s_io.c -<| */
-char *editorRowsToString (int *buflen);
-void editorOpen (char *filename);
-void editorSave ();
+char *rows_to_string (int *buflen);
+void open_file (char *filename);
+void save_file ();
 
 /* |>- s_search.c -<| */
-void editorFindCallback (char *query, int key);
-void editorFind ();
+void search_callback (char *query, int key);
+void search ();
 
 /* |>- s_input.c -<| */
-char *editorPrompt (char *prompt, void (*callback)(char *, int));
-void editorMoveCursor (int key);
+char *prompt_line (char *prompt, void (*callback)(char *, int));
+void move_cursor (int key);
 
 /* |>- s_output.c -<| */
-void editorScroll ();
-void editorDrawRows (struct abuf *ab);
-void editorRefreshScreen ();
-void changeCursorShape ();
+void scroll ();
+void draw_rows (struct abuf *ab);
+void refresh_screen ();
+void set_cursor_type ();
 
 /* |>- s_modes.c -<| */
 void process_keypress ();

@@ -1,7 +1,7 @@
 /* --------------------------------- s_io.c --------------------------------- */
 #include "shado.h"
 
-char *editorRowsToString (int *buflen) {
+char *rows_to_string (int *buflen) {
     int tlen = 0;
     int i;
     for (i = 0; i < E.numrows; i++)
@@ -19,11 +19,11 @@ char *editorRowsToString (int *buflen) {
     return buf;
 }
 
-void editorOpen (char *filename) {
+void open_file (char *filename) {
     free(E.filename);
     E.filename = strdup(filename);
 
-    editorSelectSyntaxHighlight();
+    select_syntax_hl();
 
     FILE *fp = fopen(filename, "r");
     if (!fp) kill("fopen");
@@ -34,32 +34,32 @@ void editorOpen (char *filename) {
     while ((linelen = getline(&line, &linecap, fp)) != -1) {
         while (linelen > 0 && (line[linelen - 1] == '\n' || line[linelen - 1] == '\r'))
             linelen--;
-        editorInsertRow(E.numrows, line, linelen);
+        insert_row(E.numrows, line, linelen);
     }
     free(line);
     fclose(fp);
     E.dirty = 0;
 }
 
-void editorSave () {
+void save_file () {
     if (E.filename == NULL) {
-        E.filename = editorPrompt("Save as: %s (ESC: Cancel)", NULL);
+        E.filename = prompt_line("Save as: %s (ESC: Cancel)", NULL);
         if (E.filename == NULL) {
-            editorSetStatusMessage("Save aborted");
+            set_sts_msg("Save aborted");
             return;
         }
-        editorSelectSyntaxHighlight();
+        select_syntax_hl();
     }
 
     int len;
-    char *buf = editorRowsToString(&len);
+    char *buf = rows_to_string(&len);
 
     int fd = open(E.filename, O_RDWR | O_CREAT, 0644);
     if (fd != -1) {
         if (ftruncate(fd, len) != -1)
             if (write(fd, buf, len) == len) {
                 close(fd);
-                editorSetStatusMessage("%d bytes written to disk", len);
+                set_sts_msg("%d bytes written to disk", len);
                 free(buf);
                 E.dirty = 0;
                 return;
@@ -67,6 +67,6 @@ void editorSave () {
         close(fd);
     }
     free(buf);
-    editorSetStatusMessage("Can't save! I/O error: %s", strerror(errno));
+    set_sts_msg("Can't save! I/O error: %s", strerror(errno));
 }
 /* -------------------------------------------------------------------------- */
