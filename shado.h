@@ -61,6 +61,23 @@ typedef struct erow {
     unsigned char *hl;
 } erow;
 /* }}} */
+/* --- Mapping ---  {{{ */
+typedef void (*handle)(void);
+
+struct mapping {
+    int c;
+    handle cmd_func;
+};
+
+extern const struct mapping n_map[];
+extern const struct mapping n_dmap[];
+extern const struct mapping i_map[];
+/* }}} */
+/* --- Copy Register --- {{{ */
+struct copyRegister {
+    /*TODO: linked list*/
+};
+/* }}} */
 /* --- Global State --- {{{ */
 struct globalState {
     int cx, cy;
@@ -84,6 +101,9 @@ struct globalState {
 
     /* Makes sure not to print escape code keys */
     int print_flag;
+
+    /* Global copy register */
+    struct copyRegister cpyreg;
 };
 /* }}} */
 /* --- Syntax --- {{{ */
