@@ -101,6 +101,7 @@ void editorRefreshScreen () {
 
 void changeCursorShape () {
     if(E.mode == 1) write(STDOUT_FILENO, "\x1b[6 q", 5);
+    else if(E.mode == 10) write(STDOUT_FILENO, "\x1b[4 q", 5);
     else write(STDOUT_FILENO, "\x1b[2 q", 5);
 }
 /* -------------------------------------------------------------------------- */

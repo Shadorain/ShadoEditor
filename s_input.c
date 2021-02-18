@@ -181,12 +181,18 @@ const struct mapping n_dmap[] = {
 };
 
 void n_dtree() { 
+    E.mode = MISC;
+    changeCursorShape();
+
     int c = editorReadKey();
     for (int i = 0; i < LEN(n_dmap); ++i)
         if (n_dmap[i].c == c) {
             n_dmap[i].cmd_func();
             break;
         }
+
+    E.mode = NORMAL;
+    changeCursorShape();
 }
 
 void n_dline() { editorDelRow(E.cy); }
@@ -218,12 +224,19 @@ const struct mapping n_cmap[] = {
 };
 
 void n_ctree() { 
+    E.mode = MISC;
+    changeCursorShape();
+
     int c = editorReadKey();
     for (int i = 0; i < LEN(n_cmap); ++i)
         if (n_cmap[i].c == c) {
             n_cmap[i].cmd_func();
+            E.mode = INSERT;
             break;
+        } else {
+            E.mode = NORMAL;
         }
+    changeCursorShape();
 }
 
 void n_cline() {

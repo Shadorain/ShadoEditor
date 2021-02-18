@@ -39,6 +39,7 @@ extern struct globalState E;
 #define INSERT 1
 #define VISUAL 2
 #define REPLACE 3
+#define MISC 10
 /*}}}*/
 /* -- Data -- {{{ */
 /* --- Append buffer --- {{{ */
@@ -78,7 +79,7 @@ struct globalState {
     erow *row;
 
     /* 0: normal, 1: insert, 2: visual, 3: visual_line,
-     * 4: visual_blk, 5: sreplace, 6: mrerplace */
+     * 4: visual_blk, 5: sreplace, 6: mrerplace, 10: misc */
     int mode;
 
     /* Makes sure not to print escape code keys */
