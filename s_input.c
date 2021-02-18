@@ -13,6 +13,8 @@ void n_nldown();
 void n_nlup();
 void n_cursdel();
 void n_pcursdel();
+void n_idel();
+void n_iedel();
 void n_nlup();
 void n_ctree();
 void n_dtree();
@@ -27,6 +29,13 @@ void n_move_up();
 void n_move_right();
 void n_return();
 void n_quit();
+/* --- Proto: Delete --- {{{ */
+void n_dline();
+void n_ddown();
+void n_dup();
+void n_dleft();
+void n_dright();
+/*  }}} */
 /* }}} */
 typedef void (*handle)(void);
 
@@ -34,25 +43,30 @@ const struct mapping {
     int c;
     handle cmd_func;
 } n_map[] = { 
-        {'a', n_append},
-        {'A', n_eappend},
-        {'i', n_insert},
-        {'o', n_nldown},
-        {'O', n_nlup},
-        {'x', n_cursdel},
-        {'X', n_pcursdel},
-        {'c', n_ctree},
-        {'d', n_dtree},
-        {'g', n_gtree},
-        {'y', n_ytree},
-        {'z', n_ztree},
-        {'h', n_move_left},
-        {'j', n_move_down},
-        {'k', n_move_up},
-        {'l', n_move_right},
-        {CTRL_KEY('q'), n_quit},
-        {'\r', n_return},
+    {'a', n_append},
+    {'A', n_eappend},
+    {'i', n_insert},
+    {'o', n_nldown},
+    {'O', n_nlup},
+    {'s', n_idel},
+    {'S', n_iedel},
+    {'x', n_cursdel},
+    {'X', n_pcursdel},
+    {'c', n_ctree},
+    {'d', n_dtree},
+    {'g', n_gtree},
+    {'y', n_ytree},
+    {'z', n_ztree},
+    {'h', n_move_left},
+    {'j', n_move_down},
+    {'k', n_move_up},
+    {'l', n_move_right},
+    {CTRL_KEY('q'), n_quit},
+    {'\r', n_return},
 };
+
+/* const struct mapping n_cmap[] = { */
+/* }; */
 
 void n_append() {
     editorMoveCursor(RIGHT);
@@ -93,11 +107,23 @@ void n_cursdel() {
 
 void n_pcursdel() {
     editorDelChar();
+}
 
+void n_idel() {
+    editorMoveCursor(RIGHT);
+    editorDelChar();
+    E.mode = INSERT;
+    changeCursorShape();
+}
+
+void n_iedel() {
+    editorDelChar();
+    E.mode = INSERT;
+    changeCursorShape();
 }
 
 void n_ctree() { return; }
-void n_dtree() { return; }
+
 void n_gtree() { return; }
 void n_ytree() { return; }
 void n_ztree() { return; }
@@ -133,6 +159,30 @@ void n_return() {
     /* TODO: make more like vims */
     editorMoveCursor(DOWN);
 }
+/* --- Delete --- {{{ */
+const struct mapping n_dmap[] = {
+    {'d', n_dline},
+    {'j', n_ddown},
+    {'k', n_dup},
+    {'h', n_dleft},
+    {'l', n_dright},
+};
+
+void n_dtree() { 
+    int c = editorReadKey();
+    for (int i = 0; i < LEN(n_map); ++i)
+        if (n_dmap[i].c == c) {
+            n_dmap[i].cmd_func();
+            break;
+        }
+}
+
+void n_dline() { exit(0); }
+void n_ddown() {}
+void n_dup() {}
+void n_dleft() {}
+void n_dright() {}
+/*  }}} */
 /*}}}*/
 /* -- Insert -- {{{ */
 /* --- Prototypes --- {{{ */
@@ -328,72 +378,22 @@ void editorProcessKeypress () {
     /* quit_times = QUIT_TIMES; */
 }
 
-        /* switch (c) { */
-        /*     case '\r': */
-        /*         editorInsertNewline(); */
-        /*         break; */
-
-        /*     case CTRL_KEY('q'): */
-        /*         if (E.dirty && quit_times > 0) { */
-        /*             editorSetStatusMessage("WARNING!! File has unsaved changes. " */
-        /*                     "Press C-q %d more times to quit", quit_times); */
-        /*             quit_times--; */
-        /*             return; */
-        /*         } */
-        /*         write(STDOUT_FILENO, "\x1b[2J", 4); */
-        /*         write(STDOUT_FILENO, "\x1b[H", 3); */
-        /*         exit(0); */
-        /*         break; */
-
-        /*     case BACKSPACE: case CTRL_KEY('h'): //case DEL_KEY: */
-        /*         if (c == DEL_KEY) editorMoveCursor(RIGHT); */
-        /*         editorDelChar(); */
-        /*         break; */
-
-        /*     case CTRL_KEY('s'): */
-        /*         editorSave(); */
-        /*         break; */
-
-        /*     case CTRL_KEY('l'): */
-        /*     case '\x1b': */
-        /*         /1* TODO *1/ */
-        /*         break; */
-
-        /*     case CTRL_KEY('f'): */
-        /*         editorFind(); */
-        /*         break; */
-
-        /*     case HOME_KEY: */
-        /*         E.cx = 0; */
-        /*         break; */
-        /*     case END_KEY: */
-        /*         if (E.cy < E.numrows) */
-        /*             E.cx = E.row[E.cy].size; */
-        /*         break; */
-
-        /*     case PAGE_UP: case PAGE_DOWN: */
-        /*         { */
-        /*             if (c == PAGE_UP) */
-        /*                 E.cy = E.rowoff; */
-        /*             else if (c == PAGE_DOWN) { */
-        /*                 E.cy = E.rowoff + E.screenrows - 1; */
-        /*                 if (E.cy > E.numrows) E.cy = E.numrows; */
-        /*             } */
-
-        /*             int times = E.screenrows; */
-        /*             while (times--) */
-        /*                 editorMoveCursor(c == PAGE_UP ? UP : DOWN); */
-        /*         } */
-        /*         break; */
-
-        /*     case LEFT: case DOWN: case UP: case RIGHT: */
-        /*     case ARROW_LEFT: case ARROW_DOWN: case ARROW_UP: case ARROW_RIGHT: */
-        /*         editorMoveCursor(c); */
-        /*         break; */
-
-        /*     default: */
-        /*         editorInsertChar(c); */
-        /*         break; */
-        /* } */
+/*     case CTRL_KEY('q'): */
+/*         if (E.dirty && quit_times > 0) { */
+/*             editorSetStatusMessage("WARNING!! File has unsaved changes. " */
+/*                     "Press C-q %d more times to quit", quit_times); */
+/*             quit_times--; */
+/*             return; */
+/*         } */
+/*         write(STDOUT_FILENO, "\x1b[2J", 4); */
+/*         write(STDOUT_FILENO, "\x1b[H", 3); */
+/*         exit(0); */
+/*         break; */
+/*     case CTRL_KEY('s'): */
+/*         editorSave(); */
+/*         break; */
+/*     case CTRL_KEY('f'): */
+/*         editorFind(); */
+/*         break; */
 /*}}}*/
 /* -------------------------------------------------------------------------- */
