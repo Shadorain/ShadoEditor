@@ -33,7 +33,7 @@ int main (int argc, char *argv[]) {
 
     while (1) {
         editorRefreshScreen();
-        editorProcessKeypress();
+        process_keypress();
     }
     return 0;
 }

@@ -338,4 +338,51 @@ void i_return() {
     E.print_flag = 0;
 }
 /*}}}*/
+/* -- Process Keypress -- {{{ */
+void process_keypress () {
+    /* static int quit_times = QUIT_TIMES; */
+
+    int c = editorReadKey();
+    int mode = E.mode;
+
+    /* Normal Mode */
+    /* TODO: Sort structs and search via binary search instead of brute */
+    if (mode == NORMAL)
+        for (int i = 0; i < LEN(n_map); ++i)
+            if (n_map[i].c == c) {
+                n_map[i].cmd_func();
+                break;
+            }
+    if (mode == INSERT) {
+        for (int j = 0; j < LEN(i_map); ++j)
+            if (i_map[j].c == c) {
+                i_map[j].cmd_func();
+                break;
+            }
+        if (E.mode == INSERT && E.print_flag == 1) // secondary check just incase
+            editorInsertChar(c);
+    }
+
+    E.print_flag = 1;
+    /* quit_times = QUIT_TIMES; */
+}
+
+/*     case CTRL_KEY('q'): */
+/*         if (E.dirty && quit_times > 0) { */
+/*             editorSetStatusMessage("WARNING!! File has unsaved changes. " */
+/*                     "Press C-q %d more times to quit", quit_times); */
+/*             quit_times--; */
+/*             return; */
+/*         } */
+/*         write(STDOUT_FILENO, "\x1b[2J", 4); */
+/*         write(STDOUT_FILENO, "\x1b[H", 3); */
+/*         exit(0); */
+/*         break; */
+/*     case CTRL_KEY('s'): */
+/*         editorSave(); */
+/*         break; */
+/*     case CTRL_KEY('f'): */
+/*         editorFind(); */
+/*         break; */
+/*}}}*/
 /* -------------------------------------------------------------------------- */

@@ -68,14 +68,12 @@ struct mapping {
     int c;
     handle cmd_func;
 };
-
-extern const struct mapping n_map[];
-extern const struct mapping n_dmap[];
-extern const struct mapping i_map[];
 /* }}} */
 /* --- Copy Register --- {{{ */
 struct copyRegister {
     /*TODO: linked list*/
+    char *store;
+    struct copyRegister *next;
 };
 /* }}} */
 /* --- Global State --- {{{ */
@@ -216,12 +214,14 @@ void editorFind ();
 /* |>- s_input.c -<| */
 char *editorPrompt (char *prompt, void (*callback)(char *, int));
 void editorMoveCursor (int key);
-void editorProcessKeypress ();
 
 /* |>- s_output.c -<| */
 void editorScroll ();
 void editorDrawRows (struct abuf *ab);
 void editorRefreshScreen ();
 void changeCursorShape ();
+
+/* |>- s_modes.c -<| */
+void process_keypress ();
 /*}}}*/
 /* -------------------------------------------------------------------------- */
