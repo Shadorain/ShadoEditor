@@ -24,7 +24,7 @@ void editorDrawRows (struct abuf *ab) {
             if (E.numrows == 0 && y == E.screenrows / 3) {
                 char welcome[80];
                 int welcomelen = snprintf(welcome, sizeof(welcome),
-                        "Kilo editor -- version %s", SHADO_VERSION);
+                        "Shado editor -- version %s", SHADO_VERSION);
                 if (welcomelen > E.screencols) welcomelen = E.screencols;
                 int padding = (E.screencols - welcomelen) / 2;
                 if (padding) {

@@ -15,6 +15,8 @@ void n_cursdel();
 void n_pcursdel();
 void n_idel();
 void n_iedel();
+void n_gototop();
+void n_gotobottom();
 void n_nlup();
 void n_ctree();
 void n_dtree();
@@ -36,6 +38,13 @@ void n_dup();
 void n_dleft();
 void n_dright();
 /*  }}} */
+/* --- Proto: Change --- {{{ */
+void n_cline();
+void n_cdown();
+void n_cup();
+void n_cleft();
+void n_cright();
+/*  }}} */
 /* }}} */
 typedef void (*handle)(void);
 
@@ -48,6 +57,8 @@ const struct mapping {
     {'i', n_insert},
     {'o', n_nldown},
     {'O', n_nlup},
+    {'H', n_gototop},
+    {'L', n_gotobottom},
     {'s', n_idel},
     {'S', n_iedel},
     {'x', n_cursdel},
@@ -122,7 +133,8 @@ void n_iedel() {
     changeCursorShape();
 }
 
-void n_ctree() { return; }
+void n_gototop() { editorMoveCursor(PAGE_UP); }
+void n_gotobottom() { editorMoveCursor(PAGE_DOWN); }
 
 void n_gtree() { return; }
 void n_ytree() { return; }
@@ -170,18 +182,82 @@ const struct mapping n_dmap[] = {
 
 void n_dtree() { 
     int c = editorReadKey();
-    for (int i = 0; i < LEN(n_map); ++i)
+    for (int i = 0; i < LEN(n_dmap); ++i)
         if (n_dmap[i].c == c) {
             n_dmap[i].cmd_func();
             break;
         }
 }
 
-void n_dline() { exit(0); }
-void n_ddown() {}
-void n_dup() {}
-void n_dleft() {}
-void n_dright() {}
+void n_dline() { editorDelRow(E.cy); }
+void n_ddown() {
+    editorDelRow(E.cy);
+    editorDelRow(E.cy);
+}
+void n_dup() {
+    editorDelRow(E.cy);
+    editorMoveCursor(UP);
+    editorDelRow(E.cy);
+}
+void n_dleft() {
+    editorDelChar();
+}
+void n_dright() {
+    editorMoveCursor(RIGHT);
+    editorMoveCursor(RIGHT);
+    editorDelChar();
+}
+/*  }}} */
+/* --- Change --- {{{ */
+const struct mapping n_cmap[] = {
+    {'c', n_cline},
+    {'j', n_cdown},
+    {'k', n_cup},
+    {'h', n_cleft},
+    {'l', n_cright},
+};
+
+void n_ctree() { 
+    int c = editorReadKey();
+    for (int i = 0; i < LEN(n_cmap); ++i)
+        if (n_cmap[i].c == c) {
+            n_cmap[i].cmd_func();
+            break;
+        }
+}
+
+void n_cline() {
+    editorDelRow(E.cy);
+    editorMoveCursor(UP);
+    editorInsertNewline();
+    E.mode = INSERT;
+    changeCursorShape();
+}
+void n_cdown() {
+    editorDelRow(E.cy);
+    editorDelRow(E.cy);
+    E.mode = INSERT;
+    changeCursorShape();
+}
+void n_cup() {
+    editorDelRow(E.cy);
+    editorMoveCursor(UP);
+    editorDelRow(E.cy);
+    E.mode = INSERT;
+    changeCursorShape();
+}
+void n_cleft() {
+    editorDelChar();
+    E.mode = INSERT;
+    changeCursorShape();
+}
+void n_cright() {
+    editorMoveCursor(RIGHT);
+    editorMoveCursor(RIGHT);
+    editorDelChar();
+    E.mode = INSERT;
+    changeCursorShape();
+}
 /*  }}} */
 /*}}}*/
 /* -- Insert -- {{{ */
@@ -358,6 +434,7 @@ void editorProcessKeypress () {
     int mode = E.mode;
 
     /* Normal Mode */
+    /* TODO: Sort structs and search via binary search instead of brute */
     if (mode == NORMAL)
         for (int i = 0; i < LEN(n_map); ++i)
             if (n_map[i].c == c) {
