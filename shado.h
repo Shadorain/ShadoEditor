@@ -70,10 +70,11 @@ struct mapping {
 };
 /* }}} */
 /* --- Copy Register --- {{{ */
-struct copyRegister {
+typedef struct CopyRegister CopyRegister; /* easier since so often used */
+struct CopyRegister {
     /*TODO: linked list*/
-    char *store;
-    struct copyRegister *next;
+    char *line;
+    CopyRegister *next;
 };
 /* }}} */
 /* --- Global State --- {{{ */
@@ -101,7 +102,8 @@ struct globalState {
     int print_flag;
 
     /* Global copy register */
-    struct copyRegister cpyreg;
+    CopyRegister *cpyhead;
+    CopyRegister *cpycurr;
 };
 /* }}} */
 /* --- Syntax --- {{{ */
@@ -223,5 +225,9 @@ void set_cursor_type ();
 
 /* |>- s_modes.c -<| */
 void process_keypress ();
+
+/* |>- s_copyreg.c -<| */
+void cpy_append (char *line);
+void cpy_print();
 /*}}}*/
 /* -------------------------------------------------------------------------- */

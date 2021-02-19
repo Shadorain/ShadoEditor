@@ -3,7 +3,7 @@
 
 struct globalState E;
 
-void initEditor () {
+void init () {
     E.cx = 0;
     E.cy = 0;
     E.rx = 0;
@@ -19,6 +19,7 @@ void initEditor () {
 
     E.mode = 0;
     E.print_flag = 1;
+    E.cpyhead = NULL;
 
     if (get_win_size(&E.screenrows, &E.screencols) == -1) kill("getWindowSize");
     E.screenrows -= 2;
@@ -26,7 +27,7 @@ void initEditor () {
 
 int main (int argc, char *argv[]) {
     enable_raw();
-    initEditor();
+    init();
     if (argc >= 2) open_file(argv[1]);
 
     set_sts_msg("HELP: C-q: Quit | C-s: Save | C-f: Find");

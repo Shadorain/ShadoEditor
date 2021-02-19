@@ -46,6 +46,13 @@ void n_cup();
 void n_cleft();
 void n_cright();
 /*  }}} */
+/* --- Proto: Yank --- {{{ */
+void n_yline();
+void n_ydown();
+void n_yup();
+void n_yleft();
+void n_yright();
+/*  }}} */
 /* }}} */
 const struct mapping n_map[] = { 
     {'\r', n_return}, /* 13 */
@@ -72,10 +79,7 @@ const struct mapping n_map[] = {
     {'y', n_ytree}, /* 121 */
     {'z', n_ztree}, /* 122 */
 };
-
-/* const struct mapping n_cmap[] = { */
-/* }; */
-
+/* --- Functions --- {{{ */
 void n_append() {
     move_cursor(RIGHT);
     E.mode = INSERT;
@@ -139,7 +143,6 @@ void n_gototop() { move_cursor(PAGE_UP); }
 void n_gotobottom() { move_cursor(PAGE_DOWN); }
 
 void n_gtree() { return; }
-void n_ytree() { return; }
 void n_ztree() { return; }
 
 void n_move_left() {
@@ -173,49 +176,7 @@ void n_return() {
     /* TODO: make more like vims */
     move_cursor(DOWN);
 }
-/* --- Delete --- {{{ */
-const struct mapping n_dmap[] = {
-    {'d', n_dline}, /* 100 */
-    {'h', n_dleft}, /* 104 */
-    {'j', n_ddown}, /* 106 */
-    {'k', n_dup},   /* 107 */
-    {'l', n_dright} /* 108 */,
-};
-
-void n_dtree() { 
-    E.mode = MISC;
-    set_cursor_type();
-
-    int c = read_keypress();
-    for (int i = 0; i < LEN(n_dmap); ++i)
-        if (n_dmap[i].c == c) {
-            n_dmap[i].cmd_func();
-            break;
-        }
-
-    E.mode = NORMAL;
-    set_cursor_type();
-}
-
-void n_dline() { delete_row(E.cy); }
-void n_ddown() {
-    delete_row(E.cy);
-    delete_row(E.cy);
-}
-void n_dup() {
-    delete_row(E.cy);
-    move_cursor(UP);
-    delete_row(E.cy);
-}
-void n_dleft() {
-    delete_char();
-}
-void n_dright() {
-    move_cursor(RIGHT);
-    move_cursor(RIGHT);
-    delete_char();
-}
-/*  }}} */
+/*}}}*/
 /* --- Change --- {{{ */
 const struct mapping n_cmap[] = {
     {'c', n_cline},  /* 99 */
@@ -274,6 +235,94 @@ void n_cright() {
     set_cursor_type();
 }
 /*  }}} */
+/* --- Delete --- {{{ */
+const struct mapping n_dmap[] = {
+    {'d', n_dline}, /* 100 */
+    {'h', n_dleft}, /* 104 */
+    {'j', n_ddown}, /* 106 */
+    {'k', n_dup},   /* 107 */
+    {'l', n_dright} /* 108 */,
+};
+
+void n_dtree() { 
+    E.mode = MISC;
+    set_cursor_type();
+
+    int c = read_keypress();
+    for (int i = 0; i < LEN(n_dmap); ++i)
+        if (n_dmap[i].c == c) {
+            n_dmap[i].cmd_func();
+            break;
+        }
+
+    E.mode = NORMAL;
+    set_cursor_type();
+}
+
+void n_dline() { delete_row(E.cy); }
+void n_ddown() {
+    delete_row(E.cy);
+    delete_row(E.cy);
+}
+void n_dup() {
+    delete_row(E.cy);
+    move_cursor(UP);
+    delete_row(E.cy);
+}
+void n_dleft() {
+    delete_char();
+}
+void n_dright() {
+    move_cursor(RIGHT);
+    move_cursor(RIGHT);
+    delete_char();
+}
+/*  }}} */
+/* --- Yank --- {{{ */
+const struct mapping n_ymap[] = {
+    {'h', n_yleft}, /* 104 */
+    {'j', n_ydown}, /* 106 */
+    {'k', n_yup},   /* 107 */
+    {'l', n_yright} /* 108 */,
+    {'y', n_yline}, /* 121 */
+};
+
+void n_ytree() { 
+    E.mode = MISC;
+    set_cursor_type();
+
+    int c = read_keypress();
+    for (int i = 0; i < LEN(n_ymap); ++i)
+        if (n_ymap[i].c == c) {
+            n_ymap[i].cmd_func();
+            break;
+        }
+
+    E.mode = NORMAL;
+    set_cursor_type();
+}
+
+void n_yline() { 
+    cpy_append(E.row[E.cy].chars);
+}
+void n_ydown() {
+    delete_row(E.cy);
+    delete_row(E.cy);
+}
+void n_yup() {
+    delete_row(E.cy);
+    move_cursor(UP);
+    delete_row(E.cy);
+}
+void n_yleft() {
+    delete_char();
+}
+void n_yright() {
+    move_cursor(RIGHT);
+    move_cursor(RIGHT);
+    delete_char();
+}
+/*  }}} */
 /*}}}*/
 /* -- Insert -- {{{ */
 /* --- Prototypes --- {{{ */
@@ -296,7 +345,7 @@ const struct mapping i_map[] = {
     {1002, i_move_up},
     {1003, i_move_right},
 };
-
+/* --- Functions --- {{{ */
 void i_move_left() {
     move_cursor(LEFT);
     E.print_flag = 0;
@@ -344,6 +393,7 @@ void i_return() {
     insert_nl();
     E.print_flag = 0;
 }
+/* }}} */
 /*}}}*/
 /* -- Binary search -- {{{ */
 int bin_search (const struct mapping map[], int left, int right, int x) {
