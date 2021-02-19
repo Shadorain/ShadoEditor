@@ -9,6 +9,7 @@
 /* --- Prototypes --- {{{ */
 void n_append();
 void n_eappend();
+void n_escape();
 void n_nldown();
 void n_nlup();
 void n_cursdel();
@@ -47,28 +48,29 @@ void n_cright();
 /*  }}} */
 /* }}} */
 const struct mapping n_map[] = { 
-    {'a', n_append},
-    {'A', n_eappend},
-    {'i', n_insert},
-    {'o', n_nldown},
-    {'O', n_nlup},
-    {'H', n_gototop},
-    {'L', n_gotobottom},
-    {'s', n_idel},
-    {'S', n_iedel},
-    {'x', n_cursdel},
-    {'X', n_pcursdel},
-    {'c', n_ctree},
-    {'d', n_dtree},
-    {'g', n_gtree},
-    {'y', n_ytree},
-    {'z', n_ztree},
-    {'h', n_move_left},
-    {'j', n_move_down},
-    {'k', n_move_up},
-    {'l', n_move_right},
-    {CTRL_KEY('q'), n_quit},
-    {'\r', n_return},
+    {'\r', n_return}, /* 13 */
+    {CTRL_KEY('q'), n_quit}, /* 17 */
+    {27,   n_escape}, /* 27 */
+    {'A', n_eappend}, /* 65 */
+    {'H', n_gototop}, /* 72 */
+    {'L', n_gotobottom}, /* 76 */
+    {'O', n_nlup}, /* 79 */
+    {'S', n_iedel}, /* 83 */
+    {'X', n_pcursdel}, /* 88 */
+    {'a', n_append}, /* 97 */
+    {'c', n_ctree}, /* 99 */
+    {'d', n_dtree}, /* 100 */
+    {'g', n_gtree}, /* 103 */
+    {'h', n_move_left}, /* 104 */
+    {'i', n_insert}, /* 105 */
+    {'j', n_move_down}, /* 106 */
+    {'k', n_move_up}, /* 107 */
+    {'l', n_move_right}, /* 108 */
+    {'o', n_nldown}, /* 111 */
+    {'s', n_idel}, /* 115 */
+    {'x', n_cursdel}, /* 120 */
+    {'y', n_ytree}, /* 121 */
+    {'z', n_ztree}, /* 122 */
 };
 
 /* const struct mapping n_cmap[] = { */
@@ -84,6 +86,11 @@ void n_eappend() {
     move_cursor(END_KEY);
     E.mode = INSERT;
     set_cursor_type();
+}
+
+void n_escape() {
+    E.mode = NORMAL;
+    return;
 }
 
 void n_insert() {
@@ -168,11 +175,11 @@ void n_return() {
 }
 /* --- Delete --- {{{ */
 const struct mapping n_dmap[] = {
-    {'d', n_dline},
-    {'j', n_ddown},
-    {'k', n_dup},
-    {'h', n_dleft},
-    {'l', n_dright},
+    {'d', n_dline}, /* 100 */
+    {'h', n_dleft}, /* 104 */
+    {'j', n_ddown}, /* 106 */
+    {'k', n_dup},   /* 107 */
+    {'l', n_dright} /* 108 */,
 };
 
 void n_dtree() { 
@@ -211,11 +218,11 @@ void n_dright() {
 /*  }}} */
 /* --- Change --- {{{ */
 const struct mapping n_cmap[] = {
-    {'c', n_cline},
-    {'j', n_cdown},
-    {'k', n_cup},
-    {'h', n_cleft},
-    {'l', n_cright},
+    {'c', n_cline},  /* 99 */
+    {'h', n_cleft},  /* 104 */
+    {'j', n_cdown},  /* 106 */
+    {'k', n_cup},    /* 107 */
+    {'l', n_cright}, /* 108 */
 };
 
 void n_ctree() { 
@@ -281,13 +288,13 @@ void i_escape();
 void i_return();
 /* }}} */
 const struct mapping i_map[] = { 
+    {'\r', i_return}, /* 13 */
+    {27,   i_escape},
+    {127,  i_backspace},
     {1000, i_move_left},
     {1001, i_move_down},
     {1002, i_move_up},
     {1003, i_move_right},
-    {27,   i_escape},
-    {127,  i_backspace},
-    {'\r', i_return},
 };
 
 void i_move_left() {
@@ -339,29 +346,40 @@ void i_return() {
 }
 /*}}}*/
 /* -- Binary search -- {{{ */
+int bin_search (const struct mapping map[], int left, int right, int x) {
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
 
+        if (map[mid].c == x) return mid;
+        if (map[mid].c < x)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+
+    return -1;
+}
 /*}}}*/
 /* -- Process Keypress -- {{{ */
 void process_keypress () {
     /* static int quit_times = QUIT_TIMES; */
+    int idx;
 
     int c = read_keypress();
     int mode = E.mode;
 
     /* Normal Mode */
     /* TODO: Sort structs and search via binary search instead of brute */
-    if (mode == NORMAL)
-        for (int i = 0; i < LEN(n_map); ++i)
-            if (n_map[i].c == c) {
-                n_map[i].cmd_func();
-                break;
-            }
+    if (mode == NORMAL) {
+        /* bin search for index of keypress in n_map */
+        idx = bin_search(n_map, 0, LEN(n_map)-1, c);
+        if (idx != -1)
+            n_map[idx].cmd_func();
+    }
     if (mode == INSERT) {
-        for (int j = 0; j < LEN(i_map); ++j)
-            if (i_map[j].c == c) {
-                i_map[j].cmd_func();
-                break;
-            }
+        idx = bin_search(i_map, 0, LEN(i_map)-1, c);
+        if (idx != -1)
+            i_map[idx].cmd_func();
         if (E.mode == INSERT && E.print_flag == 1) // secondary check just incase
             insert_char(c);
     }
@@ -369,6 +387,21 @@ void process_keypress () {
     E.print_flag = 1;
     /* quit_times = QUIT_TIMES; */
 }
+    /* if (mode == NORMAL) */
+    /*     for (int i = 0; i < LEN(n_map); ++i) */
+    /*         if (n_map[i].c == c) { */
+    /*             n_map[i].cmd_func(); */
+    /*             break; */
+    /*         } */
+    /* if (mode == INSERT) { */
+    /*     for (int j = 0; j < LEN(i_map); ++j) */
+    /*         if (i_map[j].c == c) { */
+    /*             i_map[j].cmd_func(); */
+    /*             break; */
+    /*         } */
+    /*     if (E.mode == INSERT && E.print_flag == 1) // secondary check just incase */
+    /*         insert_char(c); */
+    /* } */
 
 /*     case CTRL_KEY('q'): */
 /*         if (E.dirty && quit_times > 0) { */
