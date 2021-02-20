@@ -180,6 +180,7 @@ void kill (const char *s);
 void disable_raw ();
 void enable_raw ();
 int read_keypress ();
+void quit ();
 int get_curs_pos (int *rows, int *cols);
 int get_win_size (int *rows, int *cols);
 

@@ -73,6 +73,14 @@ int read_keypress () {
         return c;
 }
 
+void quit () {
+    E.mode = NORMAL;
+    set_cursor_type();
+    write(STDOUT_FILENO, "\x1b[2J", 4);
+    write(STDOUT_FILENO, "\x1b[H", 3);
+    exit(0);
+}
+
 int get_curs_pos (int *rows, int *cols) {
     char buf[32];
     unsigned int i = 0;

@@ -191,10 +191,7 @@ void n_null() {
 }
 
 void n_quit() {
-    write(STDOUT_FILENO, "\x1b[2J", 4);
-    write(STDOUT_FILENO, "\x1b[H", 3);
-    exit(0);
-    return;
+    quit();
 }
 
 void n_return() {
@@ -329,8 +326,8 @@ void n_ytree() {
 
 void n_yline() { 
     cpy_append(E.row[E.cy].render);
-    E.row[1].chars = E.row[E.cy].chars;
-    E.row[1].render = E.row[E.cy].render;
+    /* E.row[1].chars = E.row[E.cy].chars; */
+    /* E.row[1].render = E.row[E.cy].render; */
 }
 void n_ydown() {
     delete_row(E.cy);
