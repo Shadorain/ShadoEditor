@@ -6,7 +6,6 @@
 /*     int arg; */
 /* } funcarg_t; */
 /* typedef void (*nfunc_t)(funcarg_t *args); */
-
 /* --- Prototypes --- {{{ */
 void n_append();
 void n_eappend();
@@ -17,7 +16,8 @@ void n_nlup();
 void n_cursdel();
 void n_pcursdel();
 void n_gototop();
-void n_gotobottom();
+void n_pagetop();
+void n_pagebottom();
 void n_idel();
 void n_iedel();
 void n_join();
@@ -42,6 +42,13 @@ void n_move_down();
 void n_move_up();
 void n_move_right();
 void n_return();
+/* --- Proto: Change --- {{{ */
+void n_cline();
+void n_cdown();
+void n_cup();
+void n_cleft();
+void n_cright();
+/*  }}} */
 /* --- Proto: Delete --- {{{ */
 void n_dline();
 void n_ddown();
@@ -49,12 +56,12 @@ void n_dup();
 void n_dleft();
 void n_dright();
 /*  }}} */
-/* --- Proto: Change --- {{{ */
-void n_cline();
-void n_cdown();
-void n_cup();
-void n_cleft();
-void n_cright();
+/* --- Proto: Global --- {{{ */
+void n_gtop();
+void n_gdown();
+void n_gup();
+void n_gleft();
+void n_gright();
 /*  }}} */
 /* --- Proto: Yank --- {{{ */
 void n_yline();
@@ -72,10 +79,11 @@ const struct mapping n_map[] = {
     {'/', n_search}, /* 47 */
     {':', n_exmode}, /* 58 */
     {'A', n_eappend}, /* 65 */
-    {'H', n_gototop}, /* 72 */
+    {'G', n_gototop}, /* 72 */
+    {'H', n_pagetop}, /* 72 */
     {'I', n_finsert}, /* 73 */
     {'J', n_join}, /* 74 */
-    {'L', n_gotobottom}, /* 76 */
+    {'L', n_pagebottom}, /* 76 */
     /* {'N', n_decsearch}, /1* 78 *1/ */
     {'O', n_nlup}, /* 79 */
     {'P', n_bprint}, /* 80 */
@@ -182,13 +190,13 @@ void n_bprint() {
 }
 
 void n_join() {
-  if (E.cy == E.numrows - 1)
-    return;
-  erow *row = &E.row[E.cy];
-  erow *rowBelow = &E.row[E.cy + 1];
-  append_string_row(row, " ", 1);
-  append_string_row(row, rowBelow->chars, rowBelow->size);
-  delete_row(E.cy + 1);
+    if (E.cy == E.numrows - 1)
+        return;
+    erow *row = &E.row[E.cy];
+    erow *row_under = &E.row[E.cy + 1];
+    append_string_row(row, " ", 1);
+    append_string_row(row, row_under->chars, row_under->size);
+    delete_row(E.cy + 1);
 }
 
 void n_idel() {
@@ -204,10 +212,14 @@ void n_iedel() {
     set_cursor_type();
 }
 
-void n_gototop() { move_cursor(PAGE_UP); }
-void n_gotobottom() { move_cursor(PAGE_DOWN); }
+void n_gototop() {
+    E.cy = E.numrows - 1;
+    /* E.cx = E.row[E.cy].size; */
+}
 
-void n_gtree() { return; }
+void n_pagetop() { move_cursor(PAGE_UP); }
+void n_pagebottom() { move_cursor(PAGE_DOWN); }
+
 void n_ztree() { return; }
 
 void n_move_left() {
@@ -334,6 +346,47 @@ void n_dright() {
     move_cursor(RIGHT);
     move_cursor(RIGHT);
     delete_char();
+}
+/*  }}} */
+/* --- Global --- {{{ */
+const struct mapping n_gmap[] = {
+    {'g', n_gtop}, /* 103 */
+    {'h', n_gleft}, /* 104 */
+    {'j', n_gdown}, /* 106 */
+    {'k', n_gup},   /* 107 */
+    {'l', n_gright} /* 108 */,
+};
+
+void n_gtree() { 
+    E.mode = MISC;
+    set_cursor_type();
+
+    int c = read_keypress();
+    for (int i = 0; i < LEN(n_gmap); ++i)
+        if (n_gmap[i].c == c) {
+            n_gmap[i].cmd_func();
+            break;
+        }
+
+    E.mode = NORMAL;
+    set_cursor_type();
+}
+
+void n_gtop() {
+    E.cy = 0;
+    E.cx = 0;
+}
+void n_gdown() {
+    move_cursor(DOWN);
+}
+void n_gup() {
+    move_cursor(UP);
+}
+void n_gleft() {
+    move_cursor(HOME_KEY);
+}
+void n_gright() {
+    move_cursor(END_KEY);
 }
 /*  }}} */
 /* --- Yank --- {{{ */
@@ -485,6 +538,7 @@ void n_exmode() {
                 e_map[i].cmd_func();
                 break;
             }
+    free(buf);
 }
 
 void e_quit() {
