@@ -14,10 +14,11 @@ void n_nldown();
 void n_nlup();
 void n_cursdel();
 void n_pcursdel();
-void n_idel();
-void n_iedel();
 void n_gototop();
 void n_gotobottom();
+void n_idel();
+void n_iedel();
+void n_join();
 void n_nlup();
 void n_ctree();
 void n_dtree();
@@ -26,6 +27,8 @@ void n_ytree();
 void n_ztree();
 void n_insert();
 void n_null();
+void n_fprint();
+void n_bprint();
 void n_move_left();
 void n_move_down();
 void n_move_up();
@@ -60,8 +63,10 @@ const struct mapping n_map[] = {
     {27,   n_escape}, /* 27 */
     {'A', n_eappend}, /* 65 */
     {'H', n_gototop}, /* 72 */
+    {'J', n_join}, /* 74 */
     {'L', n_gotobottom}, /* 76 */
     {'O', n_nlup}, /* 79 */
+    {'P', n_bprint}, /* 80 */
     {'S', n_iedel}, /* 83 */
     {'X', n_pcursdel}, /* 88 */
     {'a', n_append}, /* 97 */
@@ -74,6 +79,7 @@ const struct mapping n_map[] = {
     {'k', n_move_up}, /* 107 */
     {'l', n_move_right}, /* 108 */
     {'o', n_nldown}, /* 111 */
+    {'p', n_fprint}, /* 112 */
     {'s', n_idel}, /* 115 */
     {'x', n_cursdel}, /* 120 */
     {'y', n_ytree}, /* 121 */
@@ -124,6 +130,25 @@ void n_cursdel() {
 
 void n_pcursdel() {
     delete_char();
+}
+
+void n_fprint() {
+    /* TODO */
+    /* E.row[E.cy].chars */
+}
+
+void n_bprint() {
+    /* TODO */
+}
+
+void n_join() {
+  if (E.cy == E.numrows - 1)
+    return;
+  erow *row = &E.row[E.cy];
+  erow *rowBelow = &E.row[E.cy + 1];
+  append_string_row(row, " ", 1);
+  append_string_row(row, rowBelow->chars, rowBelow->size);
+  delete_row(E.cy + 1);
 }
 
 void n_idel() {
@@ -303,7 +328,9 @@ void n_ytree() {
 }
 
 void n_yline() { 
-    cpy_append(E.row[E.cy].chars);
+    cpy_append(E.row[E.cy].render);
+    E.row[1].chars = E.row[E.cy].chars;
+    E.row[1].render = E.row[E.cy].render;
 }
 void n_ydown() {
     delete_row(E.cy);
