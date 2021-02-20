@@ -14,7 +14,7 @@ char *prompt_line (char *prompt, void (*callback)(char *, int)) {
         int c = read_keypress();
         if (c == DEL_KEY || c == CTRL_KEY('h') || c == BACKSPACE) {
             if (buflen != 0) buf[--buflen] = '\0';
-        } else if (c == '\x1b') {
+        } else if (c == 27) {
             set_sts_msg("");
             if (callback) callback(buf, c);
             free(buf);
