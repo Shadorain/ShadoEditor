@@ -24,6 +24,22 @@ void delete_char () {
     }
 }
 
+/* char get_char () { */
+/*     /1* if (E.cy == E.numrows) return ; *1/ */
+/*     /1* if (E.cx == 0 && E.cy == 0) return; *1/ */
+
+/*     erow *row = &E.row[E.cy]; */
+/*     if (E.cx > 0) { */
+/*         delete_char_row(row, E.cx - 1); */
+/*         E.cx--; */
+/*     } else { */
+/*         E.cx = E.row[E.cy-1].size; */
+/*         append_string_row(&E.row[E.cy-1], row->chars, row->size); */
+/*         delete_row(E.cy); */
+/*         E.cy--; */
+/*     } */
+/* } */
+
 void insert_nl () {
     if (E.cx == 0)
         insert_row(E.cy, "", 0);

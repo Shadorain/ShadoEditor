@@ -2,6 +2,8 @@
 #include "shado.h"
 
 void cpy_print() {
+    /* TODO: Traverse list when printing to print last copy done, unless...
+     * append to the start of the list, and then no need to traverse: O(1) */
     CopyRegister *temp = E.cpyhead;
     write(STDOUT_FILENO, "\x1b[2J", 4);
     write(STDOUT_FILENO, "\x1b[H", 3);

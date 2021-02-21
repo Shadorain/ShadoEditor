@@ -194,6 +194,7 @@ void delete_row (int at);
 void insert_char_row (erow *row, int at, int c);
 void delete_char_row(erow *row, int at);
 void append_string_row (erow *row, char *s, size_t len);
+struct erow *copy_append_row (erow *row, char *s, size_t len);
 
 /* |>- s_ops.c -<| */
 void insert_char (int c);

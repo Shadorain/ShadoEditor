@@ -111,4 +111,13 @@ void append_string_row (erow *row, char *s, size_t len) {
     update_row(row);
     E.dirty++;
 }
+
+struct erow *copy_append_row (erow *row, char *s, size_t len) {
+    erow *new_row = row;
+    new_row->chars = realloc(new_row->chars, new_row->size + len + 1);
+    memcpy(&new_row->chars[new_row->size], s, len);
+    new_row->size += len;
+    new_row->chars[new_row->size] = '\0';
+    return new_row;
+}
 /* -------------------------------------------------------------------------- */

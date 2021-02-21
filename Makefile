@@ -20,4 +20,10 @@ install:
 uninstall:
 	rm -f $(BDIR)/shado
 
-.PHONY: delobj clean install uninstall
+valgrind: shado
+	valgrind --log-file=./.valgrind.log --leak-check=full --show-leak-kinds=all --track-origins=yes ./shado shado.c
+
+gdb: shado
+	gdb ./shado
+
+.PHONY: delobj clean install uninstall valgrind gdb

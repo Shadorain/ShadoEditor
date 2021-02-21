@@ -1,5 +1,6 @@
 /* -------------------------------- s_modes.c ------------------------------- */
 #include "shado.h"
+#include <stdlib.h>
 #include <string.h>
 /* -- Normal -- {{{ */
 /* typedef struct func_args { */
@@ -394,7 +395,7 @@ const struct mapping n_ymap[] = {
     {'h', n_yleft}, /* 104 */
     {'j', n_ydown}, /* 106 */
     {'k', n_yup},   /* 107 */
-    {'l', n_yright} /* 108 */,
+    {'l', n_yright}, /* 108 */
     {'y', n_yline}, /* 121 */
 };
 
@@ -415,25 +416,39 @@ void n_ytree() {
 
 void n_yline() { 
     cpy_append(E.row[E.cy].render);
-    /* E.row[1].chars = E.row[E.cy].chars; */
-    /* E.row[1].render = E.row[E.cy].render; */
 }
 void n_ydown() {
-    delete_row(E.cy);
-    delete_row(E.cy);
+    if (E.cy == E.numrows - 1)
+        return;
+    erow *new_row = &E.row[E.cy];
+    new_row = copy_append_row(new_row, "\n\r", 2);
+    new_row = copy_append_row(new_row, E.row[E.cy+1].chars, E.row[E.cy+1].size);
+    cpy_append(new_row->chars);
+    cpy_print();
 }
 void n_yup() {
-    delete_row(E.cy);
     move_cursor(UP);
-    delete_row(E.cy);
+    erow *new_row = &E.row[E.cy];
+    new_row = copy_append_row(new_row, "\n\r", 2);
+    new_row = copy_append_row(new_row, E.row[E.cy+1].chars, E.row[E.cy+1].size);
+    cpy_append(new_row->chars);
+    cpy_print();
 }
 void n_yleft() {
-    delete_char();
+    /* TODO: believe to be broken, test once printing works */
+    char c = E.row[E.cy].chars[E.cx];
+    char d = E.row[E.cy].chars[E.cx-1];
+    char *new_str = strncat(&c, &d, 1);
+    if (new_str) cpy_append(new_str);
+    /* char *new_str = strncat(&E.row[E.cy].render[E.cx], &E.row[E.cy].render[E.cx-1], 16); */
+    /* erow *new_row = copy_append_row(&E.row[E.cx], E.row[E.cx-1].chars, 16); */
 }
 void n_yright() {
-    move_cursor(RIGHT);
-    move_cursor(RIGHT);
-    delete_char();
+    /* TODO: believe to be broken, test once printing works */
+    char c = E.row[E.cy].chars[E.cx];
+    char d = E.row[E.cy].chars[E.cx+1];
+    char *new_str = strncat(&c, &d, 1);
+    if (new_str) cpy_append(new_str);
 }
 /*  }}} */
 /*}}}*/
