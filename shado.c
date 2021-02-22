@@ -1,7 +1,7 @@
 /* <| Shado :: a lightweight, modular, and modal editor |> */
 #include "shado.h"
 
-struct globalState E;
+struct GlobalState E;
 
 void init () {
     E.cx = 0;
@@ -23,6 +23,10 @@ void init () {
 
     if (get_win_size(&E.screenrows, &E.screencols) == -1) kill("getWindowSize");
     E.screenrows -= 2;
+
+    /* TODO: two stacks: undo & redo */
+    Stack *undo = NULL;
+    Stack *redo = NULL;
 }
 
 int main (int argc, char *argv[]) {

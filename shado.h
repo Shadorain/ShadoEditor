@@ -18,7 +18,9 @@
 #include <unistd.h>
 /*}}}*/
 /* -- Externs -- {{{ */
-extern struct globalState E;
+extern struct GlobalState E;
+extern struct Stack *undo;
+extern struct Stack *redo;
 /*}}}*/
 /* -- Macros -- {{{ */
 #define SHADO_VERSION "0.0.1"
@@ -69,6 +71,13 @@ struct mapping {
     handle cmd_func;
 };
 /* }}} */
+/* --- Stack --- {{{ */
+typedef struct Stack Stack;
+struct Stack {
+    struct GlobalState *snap;
+    Stack *next;
+};
+/* }}} */
 /* --- Copy Register --- {{{ */
 typedef struct CopyRegister CopyRegister; /* easier since so often used */
 struct CopyRegister {
@@ -78,7 +87,7 @@ struct CopyRegister {
 };
 /* }}} */
 /* --- Global State --- {{{ */
-struct globalState {
+struct GlobalState {
     int cx, cy;
     int rx;
     int rowoff;
@@ -231,5 +240,10 @@ void process_keypress ();
 /* |>- s_copyreg.c -<| */
 void cpy_append (char *line);
 void cpy_print();
+
+/* |>- s_copyreg.c -<| */
+void push (Stack **top, struct GlobalState *state);
+struct GlobalState *pop (Stack **top);
+struct GlobalState *peek (Stack *top);
 /*}}}*/
 /* -------------------------------------------------------------------------- */
