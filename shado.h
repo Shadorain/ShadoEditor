@@ -171,6 +171,7 @@ enum ARROW_editorKey {
 /* }}} */
 /*}}}*/
 /* -- Prototypes -- {{{ */
+struct GlobalState *make_snapshot ();
 void set_sts_msg(const char *fmt, ...);
 void refresh_screen();
 char *prompt_line(char *prompt, void (*callback)(char *, int));

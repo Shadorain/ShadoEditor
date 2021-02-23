@@ -35,6 +35,8 @@ void n_fprint();
 void n_bprint();
 void n_begin();
 void n_end();
+void n_undo();
+void n_redo();
 void n_search();
 /* void n_incsearch(); */
 /* void n_decsearch(); */
@@ -75,6 +77,7 @@ void n_yright();
 const struct mapping n_map[] = { 
     {'\r', n_return}, /* 13 */
     /* {CTRL_KEY('q'), n_quit}, /1* 17 *1/ */
+    {CTRL_KEY('r'), n_redo}, /* 18 */
     {27,  n_escape}, /* 27 */
     {'$', n_end}, /* 36 */
     {'/', n_search}, /* 47 */
@@ -104,6 +107,7 @@ const struct mapping n_map[] = {
     {'o', n_nldown}, /* 111 */
     {'p', n_fprint}, /* 112 */
     {'s', n_idel}, /* 115 */
+    {'u', n_undo}, /* 117 */
     {'x', n_cursdel}, /* 120 */
     {'y', n_ytree}, /* 121 */
     {'z', n_ztree}, /* 122 */
@@ -201,6 +205,7 @@ void n_join() {
 }
 
 void n_idel() {
+    push(&undo, make_snapshot());
     move_cursor(RIGHT);
     delete_char();
     E.mode = INSERT;
@@ -208,9 +213,32 @@ void n_idel() {
 }
 
 void n_iedel() {
+    push(&undo, make_snapshot());
     delete_char();
     E.mode = INSERT;
     set_cursor_type();
+}
+
+void n_undo () {
+    /* pops off undo stack to be pushed to redo stack */
+    struct GlobalState *snap;
+    if(peek(undo)) {
+        snap = pop(&undo);
+        push(&redo, snap);
+        E = *snap;
+        return;
+    }
+    set_sts_msg("Already at oldest change");
+}
+void n_redo () {
+    struct GlobalState *redoed;
+    if(peek(redo)) {
+        redoed = pop(&redo);
+        push(&undo, redoed);
+        E = *redoed;
+        return;
+    }
+    set_sts_msg("Already at newest change");
 }
 
 void n_gototop() {
@@ -330,7 +358,10 @@ void n_dtree() {
     set_cursor_type();
 }
 
-void n_dline() { delete_row(E.cy); }
+void n_dline() {
+    push(&undo, make_snapshot());
+    delete_row(E.cy);
+}
 void n_ddown() {
     delete_row(E.cy);
     delete_row(E.cy);
@@ -594,7 +625,6 @@ int bin_search (const struct mapping map[], int left, int right, int x) {
 void process_keypress () {
     /* static int quit_times = QUIT_TIMES; */
     int idx;
-
     int c = read_keypress();
     int mode = E.mode;
 
@@ -606,12 +636,15 @@ void process_keypress () {
         if (idx != -1)
             n_map[idx].cmd_func();
     }
+    /* Insert Mode */
     if (mode == INSERT) {
         idx = bin_search(i_map, 0, LEN(i_map)-1, c);
         if (idx != -1)
             i_map[idx].cmd_func();
-        if (E.mode == INSERT && E.print_flag == 1) // secondary check just incase
+        if (E.mode == INSERT && E.print_flag == 1) { /* secondary check just incase */
+            push(&undo, make_snapshot());
             insert_char(c);
+        }
     }
 
     E.print_flag = 1;

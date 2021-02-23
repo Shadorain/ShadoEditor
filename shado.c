@@ -2,6 +2,13 @@
 #include "shado.h"
 
 struct GlobalState E;
+struct Stack *undo;
+struct Stack *redo;
+
+struct GlobalState *make_snapshot () {
+    struct GlobalState *snapshot = &E;
+    return snapshot;
+}
 
 void init () {
     E.cx = 0;
@@ -17,16 +24,15 @@ void init () {
     E.dirty = 0;
     E.syntax = NULL;
 
-    E.mode = 0;
+    E.mode = NORMAL;
     E.print_flag = 1;
     E.cpyhead = NULL;
 
     if (get_win_size(&E.screenrows, &E.screencols) == -1) kill("getWindowSize");
     E.screenrows -= 2;
 
-    /* TODO: two stacks: undo & redo */
-    Stack *undo = NULL;
-    Stack *redo = NULL;
+    undo = NULL;
+    redo = NULL;
 }
 
 int main (int argc, char *argv[]) {
