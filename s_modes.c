@@ -313,8 +313,8 @@ void n_ctree() {
 
 void n_cline() {
     delete_row(E.cy);
-    move_cursor(UP);
     insert_nl();
+    move_cursor(UP);
     E.mode = INSERT;
     set_cursor_type();
 }
