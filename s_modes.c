@@ -76,7 +76,7 @@ void n_yright();
 /* }}} */
 const struct mapping n_map[] = { 
     {'\r', n_return}, /* 13 */
-    /* {CTRL_KEY('q'), n_quit}, /1* 17 *1/ */
+    {CTRL_KEY('q'), quit}, /* 17 */
     {CTRL_KEY('r'), n_redo}, /* 18 */
     {27,  n_escape}, /* 27 */
     {'$', n_end}, /* 36 */
@@ -224,8 +224,10 @@ void n_undo () {
     struct GlobalState *snap;
     if(peek(undo)) {
         snap = pop(&undo);
+        snap->mode = NORMAL;
         push(&redo, snap);
         E = *snap;
+        E.mode = NORMAL;
         return;
     }
     set_sts_msg("Already at oldest change");
@@ -234,8 +236,10 @@ void n_redo () {
     struct GlobalState *redoed;
     if(peek(redo)) {
         redoed = pop(&redo);
+        redoed->mode = NORMAL;
         push(&undo, redoed);
         E = *redoed;
+        E.mode = NORMAL;
         return;
     }
     set_sts_msg("Already at newest change");

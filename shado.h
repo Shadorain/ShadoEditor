@@ -24,6 +24,7 @@ extern struct Stack *redo;
 /*}}}*/
 /* -- Macros -- {{{ */
 #define SHADO_VERSION "0.0.1"
+#define DEBUG 1
 
 #define TAB_STOP 4
 #define SHOW_BAR 1
@@ -172,8 +173,9 @@ enum ARROW_editorKey {
 /*}}}*/
 /* -- Prototypes -- {{{ */
 struct GlobalState *make_snapshot ();
-void set_sts_msg(const char *fmt, ...);
-void refresh_screen();
+void print_debug ();
+void set_sts_msg (const char *fmt, ...);
+void refresh_screen ();
 char *prompt_line(char *prompt, void (*callback)(char *, int));
 
 /* |>- s_abuf.c -<| */

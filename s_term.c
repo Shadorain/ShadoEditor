@@ -78,6 +78,9 @@ void quit () {
     set_cursor_type();
     write(STDOUT_FILENO, "\x1b[2J", 4);
     write(STDOUT_FILENO, "\x1b[H", 3);
+#ifdef DEBUG
+    print_debug ();
+#endif
     exit(0);
 }
 
