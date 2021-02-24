@@ -242,9 +242,10 @@ void process_keypress ();
 
 /* |>- s_copyreg.c -<| */
 void cpy_append (char *line);
+void cpy_prepend (char *line);
 void cpy_print();
 
-/* |>- s_copyreg.c -<| */
+/* |>- s_stack.c -<| */
 void push (Stack **top, struct GlobalState *state);
 struct GlobalState *pop (Stack **top);
 struct GlobalState *peek (Stack *top);

@@ -456,7 +456,7 @@ void n_ytree() {
 }
 
 void n_yline() { 
-    cpy_append(E.row[E.cy].render);
+    cpy_prepend(E.row[E.cy].render);
 }
 void n_ydown() {
     if (E.cy == E.numrows - 1)
@@ -465,7 +465,6 @@ void n_ydown() {
     new_row = copy_append_row(new_row, "\n\r", 2);
     new_row = copy_append_row(new_row, E.row[E.cy+1].chars, E.row[E.cy+1].size);
     cpy_append(new_row->chars);
-    cpy_print();
 }
 void n_yup() {
     move_cursor(UP);
@@ -473,7 +472,6 @@ void n_yup() {
     new_row = copy_append_row(new_row, "\n\r", 2);
     new_row = copy_append_row(new_row, E.row[E.cy+1].chars, E.row[E.cy+1].size);
     cpy_append(new_row->chars);
-    cpy_print();
 }
 void n_yleft() {
     /* TODO: believe to be broken, test once printing works */

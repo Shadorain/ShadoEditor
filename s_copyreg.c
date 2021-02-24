@@ -8,10 +8,11 @@ void cpy_print() {
     write(STDOUT_FILENO, "\x1b[2J", 4);
     write(STDOUT_FILENO, "\x1b[H", 3);
     printf("List is: ");
-    while(temp != NULL) {
-        printf("%s",temp->line);
-        temp = temp->next;
-    }
+    if (temp)
+        while(temp->next != NULL)
+            temp = temp->next;
+
+    printf("%s",temp->line);
     printf("\n");
     exit(0);
 }
@@ -33,5 +34,20 @@ void cpy_append (char *line) {
 
     last->next = new_node;
     E.cpycurr = last->next;
+}
+
+void cpy_prepend (char *line) {
+    CopyRegister *new_node = (CopyRegister*)malloc(sizeof(CopyRegister));
+
+    new_node->line = line;
+
+    if (E.cpyhead == NULL) {
+        new_node->next = NULL;
+        E.cpyhead = new_node;
+        return;
+    }  
+
+    new_node->next = E.cpyhead;
+    E.cpyhead = new_node;
 }
 /* -------------------------------------------------------------------------- */

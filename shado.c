@@ -66,12 +66,12 @@ void print_debug () {
     printf("------- Extra -------\n\r");
     printf("mode: %d\n\rprint flag: %d\n\r", E.mode, E.print_flag);
     printf("------- CopyRegister -------\n\r");
-    /* printf("cpyhead: %s\n\r", E.cpyhead->line); */
-    /* printf("cpycurr: %s\n\r", E.cpycurr->line); */
+    printf("cpyhead: %s\n\r", E.cpyhead->line);
+    printf("cpycurr: %s\n\r", E.cpycurr->line);
     printf("=======#----------------------#=======\n\r");
     printf("======= Undo & Redo =======\n\r");
     printf("------- Undo Stack -------\n\r");
-    /* printf("undo peek: %d\n\r", peek(undo)->mode); */
+    printf("undo peek: %d\n\r", peek(undo)->mode);
     printf("redo peek: %d\n\r", peek(redo)->mode);
     printf("=======#-----------#=======\n\r");
 }
