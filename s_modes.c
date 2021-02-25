@@ -192,10 +192,13 @@ void n_pcursdel() {
 void n_fprint() {
     /* TODO */
     /* E.row[E.cy].chars */
+    move_cursor(RIGHT);
+    cpy_print();
 }
 
 void n_bprint() {
     /* TODO */
+    cpy_print();
 }
 
 void n_join() {
@@ -474,20 +477,18 @@ void n_yup() {
     cpy_prepend(new_row->chars);
 }
 void n_yleft() {
-    /* TODO: believe to be broken, test once printing works */
-    char c = E.row[E.cy].chars[E.cx];
-    char d = E.row[E.cy].chars[E.cx-1];
-    char *new_str = strncat(&c, &d, 1);
-    if (new_str) cpy_prepend(new_str);
-    /* char *new_str = strncat(&E.row[E.cy].render[E.cx], &E.row[E.cy].render[E.cx-1], 16); */
-    /* erow *new_row = copy_append_row(&E.row[E.cx], E.row[E.cx-1].chars, 16); */
+    char *c = malloc(3 * sizeof(char));
+    c[0] = E.row[E.cy].render[E.rx];
+    c[1] = E.row[E.cy].render[E.rx-1];
+    c[2] = '\0';
+    if (c) cpy_prepend(c);
 }
 void n_yright() {
-    /* TODO: believe to be broken, test once printing works */
-    char c = E.row[E.cy].chars[E.cx];
-    char d = E.row[E.cy].chars[E.cx+1];
-    char *new_str = strncat(&c, &d, 1);
-    if (new_str) cpy_prepend(new_str);
+    char *d = malloc(3 * sizeof(char));
+    d[0] = E.row[E.cy].render[E.rx];
+    d[1] = E.row[E.cy].render[E.rx+1];
+    d[2] = '\0';
+    if (d) cpy_prepend(d);
 }
 /*  }}} */
 /*}}}*/

@@ -50,7 +50,7 @@ struct GlobalState *make_snapshot () {
 void print_debug () {
     printf("======= GlobalState Debug Info =======\n\r");
     printf("------- Cursor -------\n\r");
-    printf("cx: %d\n\ryx: %d\n\rrx: %d\n\r", E.cx, E.cy, E.rx);
+    printf("cx: %d\n\rcy: %d\n\rrx: %d\n\r", E.cx, E.cy, E.rx);
     printf("------- Rows -------\n\r");
     printf("rowoff: %d\n\rcoloff: %d\n\r", E.rowoff, E.coloff);
     printf("screenrows: %d\n\rscreencols: %d\n\r", E.screenrows, E.screencols);

@@ -2,19 +2,20 @@
 #include "shado.h"
 
 void cpy_print() {
-    /* TODO: Traverse list when printing to print last copy done, unless...
-     * append to the start of the list, and then no need to traverse: O(1) */
-    CopyRegister *temp = E.cpyhead;
-    write(STDOUT_FILENO, "\x1b[2J", 4);
-    write(STDOUT_FILENO, "\x1b[H", 3);
-    printf("List is: ");
-    if (temp)
-        while(temp->next != NULL)
-            temp = temp->next;
+    /* /1* TODO: Traverse list when printing to print last copy done, unless... */
+    /*  * append to the start of the list, and then no need to traverse: O(1) *1/ */
+    /* CopyRegister *temp = E.cpyhead; */
+    /* /1* write(STDOUT_FILENO, "\x1b[2J", 4); *1/ */
+    /* /1* write(STDOUT_FILENO, "\x1b[H", 3); *1/ */
+    /* /1* printf("List is: "); *1/ */
+    /* /1* if (temp) *1/ */
+    /* /1*     while(temp->next != NULL) *1/ */
+    /* /1*         temp = temp->next; *1/ */
 
-    printf("%s",temp->line);
-    printf("\n");
-    exit(0);
+    set_sts_msg("HEAD: %s", E.cpyhead->line);
+    /* printf("HEAD: %s",temp->line); */
+    /* printf("\n"); */
+    /* exit(0); */
 }
 
 void cpy_append (char *line) {
@@ -39,7 +40,6 @@ void cpy_append (char *line) {
 /* Better option for O(1) inserting and retrieval */
 void cpy_prepend (char *line) {
     CopyRegister *new_node = (CopyRegister*)malloc(sizeof(CopyRegister));
-
     new_node->line = line;
 
     if (E.cpyhead == NULL) {
