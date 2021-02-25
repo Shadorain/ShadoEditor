@@ -36,6 +36,7 @@ void cpy_append (char *line) {
     E.cpycurr = last->next;
 }
 
+/* Better option for O(1) inserting and retrieval */
 void cpy_prepend (char *line) {
     CopyRegister *new_node = (CopyRegister*)malloc(sizeof(CopyRegister));
 

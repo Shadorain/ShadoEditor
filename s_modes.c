@@ -464,21 +464,21 @@ void n_ydown() {
     erow *new_row = &E.row[E.cy];
     new_row = copy_append_row(new_row, "\n\r", 2);
     new_row = copy_append_row(new_row, E.row[E.cy+1].chars, E.row[E.cy+1].size);
-    cpy_append(new_row->chars);
+    cpy_prepend(new_row->chars);
 }
 void n_yup() {
     move_cursor(UP);
     erow *new_row = &E.row[E.cy];
     new_row = copy_append_row(new_row, "\n\r", 2);
     new_row = copy_append_row(new_row, E.row[E.cy+1].chars, E.row[E.cy+1].size);
-    cpy_append(new_row->chars);
+    cpy_prepend(new_row->chars);
 }
 void n_yleft() {
     /* TODO: believe to be broken, test once printing works */
     char c = E.row[E.cy].chars[E.cx];
     char d = E.row[E.cy].chars[E.cx-1];
     char *new_str = strncat(&c, &d, 1);
-    if (new_str) cpy_append(new_str);
+    if (new_str) cpy_prepend(new_str);
     /* char *new_str = strncat(&E.row[E.cy].render[E.cx], &E.row[E.cy].render[E.cx-1], 16); */
     /* erow *new_row = copy_append_row(&E.row[E.cx], E.row[E.cx-1].chars, 16); */
 }
@@ -487,7 +487,7 @@ void n_yright() {
     char c = E.row[E.cy].chars[E.cx];
     char d = E.row[E.cy].chars[E.cx+1];
     char *new_str = strncat(&c, &d, 1);
-    if (new_str) cpy_append(new_str);
+    if (new_str) cpy_prepend(new_str);
 }
 /*  }}} */
 /*}}}*/
