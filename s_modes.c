@@ -14,6 +14,9 @@ void n_escape();
 void n_exmode();
 void n_nldown();
 void n_nlup();
+void n_echange();
+void n_edelete();
+void n_pcursdel();
 void n_cursdel();
 void n_pcursdel();
 void n_gototop();
@@ -83,7 +86,9 @@ const struct mapping n_map[] = {
     {'/', n_search}, /* 47 */
     {':', n_exmode}, /* 58 */
     {'A', n_eappend}, /* 65 */
-    {'G', n_gototop}, /* 72 */
+    {'C', n_echange}, /* 67 */
+    {'D', n_edelete}, /* 68 */
+    {'G', n_gototop}, /* 71 */
     {'H', n_pagetop}, /* 72 */
     {'I', n_finsert}, /* 73 */
     {'J', n_join}, /* 74 */
@@ -191,13 +196,14 @@ void n_pcursdel() {
 
 void n_fprint() {
     /* TODO */
-    /* E.row[E.cy].chars */
+    push(&undo, make_snapshot());
     move_cursor(RIGHT);
     cpy_print();
 }
 
 void n_bprint() {
     /* TODO */
+    push(&undo, make_snapshot());
     cpy_print();
 }
 
@@ -229,6 +235,7 @@ void n_iedel() {
 
 void n_undo () {
     /* pops off undo stack to be pushed to redo stack */
+    /* Maybe undo by dirty??? */
     struct GlobalState *snap;
     if(peek(undo)) {
         snap = pop(&undo);
@@ -346,6 +353,19 @@ void n_cright() {
     E.mode = INSERT;
     set_cursor_type();
 }
+
+void n_echange() {
+    push(&undo, make_snapshot());
+    int rx = E.rx;
+    int rsize = E.row[E.cy].rsize;
+
+    move_cursor(END_KEY);
+    for (int i = 0; i < rsize - rx; i++)
+        delete_char();
+
+    E.mode = INSERT;
+    set_cursor_type();
+}
 /*  }}} */
 /* --- Delete --- {{{ */
 const struct mapping n_dmap[] = {
@@ -391,6 +411,17 @@ void n_dright() {
     move_cursor(RIGHT);
     move_cursor(RIGHT);
     delete_char();
+}
+
+void n_edelete() {
+    push(&undo, make_snapshot());
+    int rx = E.rx;
+    int rsize = E.row[E.cy].rsize;
+
+    move_cursor(END_KEY);
+    for (int i = 0; i < rsize - rx; i++)
+        delete_char();
+    move_cursor(LEFT);
 }
 /*  }}} */
 /* --- Global --- {{{ */
