@@ -2,20 +2,15 @@
 #include "shado.h"
 
 void cpy_print() {
-    /* /1* TODO: Traverse list when printing to print last copy done, unless... */
-    /*  * append to the start of the list, and then no need to traverse: O(1) *1/ */
-    /* CopyRegister *temp = E.cpyhead; */
-    /* /1* write(STDOUT_FILENO, "\x1b[2J", 4); *1/ */
-    /* /1* write(STDOUT_FILENO, "\x1b[H", 3); *1/ */
-    /* /1* printf("List is: "); *1/ */
-    /* /1* if (temp) *1/ */
-    /* /1*     while(temp->next != NULL) *1/ */
-    /* /1*         temp = temp->next; *1/ */
-
     set_sts_msg("HEAD: %s", E.cpyhead->line);
-    /* printf("HEAD: %s",temp->line); */
-    /* printf("\n"); */
-    /* exit(0); */
+    /* int rx = E.rx; /1* To go back to after printing *1/ */
+    /* int cx = E.cx; */
+
+    /* Extremely slow but gets the job done for now */
+    for(int i = 0; i < (int)strlen(E.cpyhead->line); i++)
+        insert_char(E.cpyhead->line[i]);
+    /* E.rx = rx; */
+    /* E.cx = cx; */
 }
 
 void cpy_append (char *line) {

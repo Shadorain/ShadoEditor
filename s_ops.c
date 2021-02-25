@@ -4,6 +4,8 @@
 void insert_char (int c) {
     if (E.cy == E.numrows)
         insert_row(E.numrows, "", 0);
+    if (c == '\n') insert_nl();
+    if (c == '\r') return;
     insert_char_row(&E.row[E.cy], E.cx, c);
     E.cx++;
 }
