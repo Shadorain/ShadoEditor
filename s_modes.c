@@ -143,31 +143,56 @@ void n_back() {
     
 }
 void n_end() {
-    
+    /* erow *r = &E.row[E.cy]; */
+    /* int chk = -1; */
+    /* int prev_pos = -1; */
+
+    /* while (E.cy < E.numrows) { */
+    /*     if (E.cx >= r->size) { */
+    /*         if (E.cy == E.numrows - 1) { */
+    /*             E.cx = r->size; */
+    /*             return; */
+    /*         } */
+    /*         E.cy++; */
+    /*         r = &E.row[E.cy]; */
+    /*         E.cx = 0; */
+    /*     } */
+    /*     chk = get_char_type(r->chars[E.cx]); */
+    /*     /1* if ((cursor != CHAR_SPACE) && (previous_cursor > 0) && *1/ */
+    /*     /1* ((previous_cursor != cursor) || E.cx == 0)) { *1/ */
+    /*     /1* if ((chk != CHAR_WHITESPACE && prev_pos > 0 && prev_pos != chk)) //|| (chk == CHAR_AZ09 || chk == CHAR_SYM)) *1/ */
+    /*     if (chk == CHAR_AZ09 || chk == CHAR_SYM) move_cursor(RIGHT); */
+    /*     if ((chk != CHAR_AZ09 && chk != CHAR_SYM && (prev_pos == 0 && prev_pos != chk))) { */
+    /*         E.cx--; */
+    /*         break; */
+    /*     } */
+    /*     E.cx++; */
+    /*     prev_pos = chk; */
+    /* } */
 }
 void n_word() {
-    erow *r = &E.row[E.cy];
-    int chk = -1;
-    int prev_curs = -1;
+    /* erow *r = &E.row[E.cy]; */
+    /* int chk = -1; */
+    /* int prev_pos = -1; */
 
-    while (E.cy < E.numrows) {
-        if (E.cx >= r->size) {
-            if (E.cy == E.numrows - 1) {
-                E.cx = r->size;
-                return;
-            }
-            E.cy++;
-            r = &E.row[E.cy];
-            E.cx = 0;
-        }
-        chk = get_char_type(r->chars[E.cx]);
-        /* if ((cursor != CHAR_SPACE) && (previous_cursor > 0) && */
-        /* ((previous_cursor != cursor) || E.cx == 0)) { */
-        if ((chk != CHAR_WHITESPACE && prev_curs > 0 && prev_curs != chk)) //|| (chk == CHAR_AZ09 || chk == CHAR_SYM))
-            break;
-        E.cx++;
-        prev_curs = chk;
-    }
+    /* while (E.cy < E.numrows) { */
+    /*     if (E.cx >= r->size) { */
+    /*         if (E.cy == E.numrows - 1) { */
+    /*             E.cx = r->size; */
+    /*             return; */
+    /*         } */
+    /*         E.cy++; */
+    /*         r = &E.row[E.cy]; */
+    /*         E.cx = 0; */
+    /*     } */
+    /*     chk = get_char_type(r->chars[E.cx]); */
+    /*     /1* if ((cursor != CHAR_SPACE) && (previous_cursor > 0) && *1/ */
+    /*     /1* ((previous_cursor != cursor) || E.cx == 0)) { *1/ */
+    /*     if ((chk != CHAR_WHITESPACE && prev_pos > 0 && prev_pos != chk)) //|| (chk == CHAR_AZ09 || chk == CHAR_SYM)) */
+    /*         break; */
+    /*     E.cx++; */
+    /*     prev_pos = chk; */
+    /* } */
 }
 void n_paragraph() {
     /* erow *r = &E.row[E.cy]; */
