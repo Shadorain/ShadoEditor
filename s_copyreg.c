@@ -2,13 +2,15 @@
 #include "shado.h"
 
 void cpy_print() {
-    set_sts_msg("HEAD: %s", E.cpyhead->line);
     /* int rx = E.rx; /1* To go back to after printing *1/ */
     /* int cx = E.cx; */
 
     /* Extremely slow but gets the job done for now */
-    for(int i = 0; i < (int)strlen(E.cpyhead->line); i++)
-        insert_char(E.cpyhead->line[i]);
+    if(E.cpyhead) {
+        for(int i = 0; i < (int)strlen(E.cpyhead->line); i++)
+            insert_char(E.cpyhead->line[i]);
+        set_sts_msg("HEAD: %s", E.cpyhead->line);
+    }
     /* E.rx = rx; */
     /* E.cx = cx; */
 }

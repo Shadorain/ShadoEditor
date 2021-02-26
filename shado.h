@@ -88,6 +88,8 @@ struct CopyRegister {
 };
 /* }}} */
 /* --- Global State --- {{{ */
+/* TODO: mutli files, maybe a new struct that holds a `focus` keyword for
+   currently focused file, and holds the diff global state structs */
 struct GlobalState {
     int cx, cy;
     int rx;
@@ -170,6 +172,13 @@ enum ARROW_editorKey {
     PAGE_DOWN = 1008,
 };
 /* }}} */
+/* --- Char type --- {{{*/
+enum char_type {
+    CHAR_AZ09 = 0,
+    CHAR_SYM,
+    CHAR_WHITESPACE,
+    CHAR_NL,
+};
 /*}}}*/
 /* -- Prototypes -- {{{ */
 struct GlobalState *make_snapshot ();
@@ -186,6 +195,7 @@ void ab_free(struct abuf *ab);
 void update_syntax (erow *row);
 int syntax_to_color (int hl);
 void select_syntax_hl ();
+int is_separator (int c);
 
 /* |>- s_term.c -<| */
 void kill (const char *s);
@@ -212,6 +222,7 @@ struct erow *copy_append_row (erow *row, char *s, size_t len);
 void insert_char (int c);
 void delete_char ();
 void insert_nl ();
+int get_char_type ();
 
 /* |>- s_bar.c -<| */
 void draw_sts_bar (struct abuf *ab);

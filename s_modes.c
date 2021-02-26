@@ -19,7 +19,7 @@ void n_edelete();
 void n_pcursdel();
 void n_cursdel();
 void n_pcursdel();
-void n_gototop();
+void n_gbottom();
 void n_pagetop();
 void n_pagebottom();
 void n_idel();
@@ -33,14 +33,18 @@ void n_ytree();
 void n_ztree();
 void n_finsert();
 void n_insert();
-void n_null();
 void n_fprint();
 void n_bprint();
-void n_begin();
-void n_end();
+void n_rowfront();
+void n_rowend();
 void n_undo();
 void n_redo();
 void n_search();
+void n_back();
+void n_end();
+void n_word();
+void n_paragraph();
+void n_paragraphb();
 /* void n_incsearch(); */
 /* void n_decsearch(); */
 void n_move_left();
@@ -48,6 +52,7 @@ void n_move_down();
 void n_move_up();
 void n_move_right();
 void n_return();
+void n_null();
 /* --- Proto: Change --- {{{ */
 void n_cline();
 void n_cdown();
@@ -82,13 +87,13 @@ const struct mapping n_map[] = {
     {CTRL_KEY('q'), quit}, /* 17 */
     {CTRL_KEY('r'), n_redo}, /* 18 */
     {27,  n_escape}, /* 27 */
-    {'$', n_end}, /* 36 */
+    {'$', n_rowend}, /* 36 */
     {'/', n_search}, /* 47 */
     {':', n_exmode}, /* 58 */
     {'A', n_eappend}, /* 65 */
     {'C', n_echange}, /* 67 */
     {'D', n_edelete}, /* 68 */
-    {'G', n_gototop}, /* 71 */
+    {'G', n_gbottom}, /* 71 */
     {'H', n_pagetop}, /* 72 */
     {'I', n_finsert}, /* 73 */
     {'J', n_join}, /* 74 */
@@ -98,10 +103,12 @@ const struct mapping n_map[] = {
     {'P', n_bprint}, /* 80 */
     {'S', n_iedel}, /* 83 */
     {'X', n_pcursdel}, /* 88 */
-    {'^', n_begin}, /* 94 */
+    {'^', n_rowfront}, /* 94 */
     {'a', n_append}, /* 97 */
+    {'b', n_back}, /* 98 */
     {'c', n_ctree}, /* 99 */
     {'d', n_dtree}, /* 100 */
+    {'e', n_end}, /* 101 */
     {'g', n_gtree}, /* 103 */
     {'h', n_move_left}, /* 104 */
     {'i', n_insert}, /* 105 */
@@ -113,9 +120,12 @@ const struct mapping n_map[] = {
     {'p', n_fprint}, /* 112 */
     {'s', n_idel}, /* 115 */
     {'u', n_undo}, /* 117 */
+    {'w', n_word}, /* 119 */
     {'x', n_cursdel}, /* 120 */
     {'y', n_ytree}, /* 121 */
     {'z', n_ztree}, /* 122 */
+    {'{', n_paragraphb}, /* 123 */
+    {'}', n_paragraph}, /* 125 */
 };
 /* --- Functions --- {{{ */
 void n_append() {
@@ -123,17 +133,71 @@ void n_append() {
     E.mode = INSERT;
     set_cursor_type();
 }
-
 void n_eappend() {
     move_cursor(END_KEY);
     E.mode = INSERT;
     set_cursor_type();
 }
 
-void n_begin () {
+void n_back() {
+    
+}
+void n_end() {
+    
+}
+void n_word() {
+    erow *r = &E.row[E.cy];
+    int chk = -1;
+    int prev_curs = -1;
+
+    while (E.cy < E.numrows) {
+        if (E.cx >= r->size) {
+            if (E.cy == E.numrows - 1) {
+                E.cx = r->size;
+                return;
+            }
+            E.cy++;
+            r = &E.row[E.cy];
+            E.cx = 0;
+        }
+        chk = get_char_type(r->chars[E.cx]);
+        /* if ((cursor != CHAR_SPACE) && (previous_cursor > 0) && */
+        /* ((previous_cursor != cursor) || E.cx == 0)) { */
+        if ((chk != CHAR_WHITESPACE && prev_curs > 0 && prev_curs != chk)) //|| (chk == CHAR_AZ09 || chk == CHAR_SYM))
+            break;
+        E.cx++;
+        prev_curs = chk;
+    }
+}
+void n_paragraph() {
+    /* erow *r = &E.row[E.cy]; */
+    /* int chk = -1; */
+
+    /* while (E.cy < E.numrows) { */
+    /*     if (E.cx >= r->size) { */
+    /*         if (E.cy == E.numrows - 1) { */
+    /*             E.cx = r->size; */
+    /*             return; */
+    /*         } */
+    /*         E.cy++; */
+    /*         r = &E.row[E.cy]; */
+    /*         E.cx = 0; */
+    /*     } */
+    /*     chk = get_char_type(E.row[E.cy].chars[0]); */
+    /*     /1* if (chk != CHAR_WHITESPACE && E.cx == 0) *1/ */
+    /*     if (chk == CHAR_NL) */
+    /*         break; */
+    /*     E.cy++; */
+    /* } */
+}
+void n_paragraphb() {
+    
+}
+
+void n_rowfront () {
     move_cursor(HOME_KEY);
 }
-void n_end () {
+void n_rowend () {
     move_cursor(END_KEY);
 }
 
@@ -145,7 +209,6 @@ void n_escape() {
 void n_search() {
     search();
 }
-
 /* void n_incsearch() { */
 /*     /1* search_callback(char *query, int key) *1/ */
 /* } */
@@ -158,7 +221,6 @@ void n_insert() {
     E.mode = INSERT;
     set_cursor_type();
 }
-
 void n_finsert() {
     /* TODO: go to first non whitespace char */
     E.cx = 0;
@@ -173,7 +235,6 @@ void n_nldown() {
     E.mode = INSERT;
     set_cursor_type();
 }
-
 void n_nlup() {
     push(&undo, make_snapshot());
     move_cursor(UP);
@@ -188,7 +249,6 @@ void n_cursdel() {
     move_cursor(RIGHT);
     delete_char();
 }
-
 void n_pcursdel() {
     push(&undo, make_snapshot());
     delete_char();
@@ -200,7 +260,6 @@ void n_fprint() {
     move_cursor(RIGHT);
     cpy_print();
 }
-
 void n_bprint() {
     /* TODO */
     push(&undo, make_snapshot());
@@ -225,7 +284,6 @@ void n_idel() {
     E.mode = INSERT;
     set_cursor_type();
 }
-
 void n_iedel() {
     push(&undo, make_snapshot());
     delete_char();
@@ -260,7 +318,7 @@ void n_redo () {
     set_sts_msg("Already at newest change");
 }
 
-void n_gototop() {
+void n_gbottom() {
     E.cy = E.numrows - 1;
     /* E.cx = E.row[E.cy].size; */
 }
@@ -268,31 +326,28 @@ void n_gototop() {
 void n_pagetop() { move_cursor(PAGE_UP); }
 void n_pagebottom() { move_cursor(PAGE_DOWN); }
 
-void n_ztree() { return; }
-
 void n_move_left() {
     move_cursor(LEFT);
 }
-
 void n_move_down() {
     move_cursor(DOWN);
 }
-
 void n_move_up() {
     move_cursor(UP);
 }
-
 void n_move_right() {
     move_cursor(RIGHT);
-}
-
-void n_null() {
-    return;
 }
 
 void n_return() {
     /* TODO: make more like vims */
     move_cursor(DOWN);
+}
+
+void n_ztree() { return; }
+
+void n_null() {
+    return;
 }
 /*}}}*/
 /* --- Change --- {{{ */
