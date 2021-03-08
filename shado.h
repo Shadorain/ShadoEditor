@@ -119,6 +119,17 @@ struct GlobalState {
 };
 /* }}} */
 /* --- Syntax --- {{{ */
+enum term_colors {
+    TERM_BLACK = 30, TERM_RED = 31,
+    TERM_GREEN = 32, TERM_YELLOW = 33,
+    TERM_BLUE = 34, TERM_MAGENTA = 35,
+    TERM_CYAN = 36, TERM_WHITE = 37,
+    TERM_BRIGHT_BLACK = 90, TERM_BRIGHT_RED = 91,
+    TERM_BRIGHT_GREEN = 92, TERM_BRIGHT_YELLOW = 93,
+    TERM_BRIGHT_BLUE = 94, TERM_BRIGHT_MAGENTA = 95,
+    TERM_BRIGHT_CYAN = 96, TERM_BRIGHT_WHITE = 97,
+};
+
 struct editorSyntax {
     char *filetype;
     char **filematch;
@@ -179,6 +190,7 @@ enum char_type {
     CHAR_WHITESPACE,
     CHAR_NL,
 };
+/* }}} */
 /*}}}*/
 /* -- Prototypes -- {{{ */
 struct GlobalState *make_snapshot ();
