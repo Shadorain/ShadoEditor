@@ -1,16 +1,26 @@
 CC=gcc
+SHELL=/bin/sh
 CFLAGS=-g -Wno-deprecated -Wall -Wextra -pedantic -std=c99 -pie -pedantic -static-libasan # -fsanitize=address
-OBJ=shado.o s_abuf.o s_synhl.o s_term.o s_rows.o s_ops.o s_bar.o s_io.o s_search.o s_input.o s_output.o s_modes.o s_copyreg.o s_stack.o
 BDIR=/usr/local/bin/
+INCLUDES=-I./include/
+SRC=./src
+OBJ=./obj
 
-shado: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS)
+FILES=shado.c s_abuf.c s_synhl.c s_term.c s_rows.c s_ops.c s_bar.c s_io.c s_search.c s_input.c s_output.c s_modes.c s_copyreg.c s_stack.c
+SOURCES=$(patsubst %,$(SRC)/%,$(FILES))
+OBJECTS=$(patsubst %.c,$(OBJ)/%.o,$(FILES))
+
+$(OBJ)/%.o: $(SRC)/%.c
+	$(CC) $(INCLUDES) -o $@ $< $(CFLAGS)
+
+shado: $(OBJECTS)
+	$(CC) $(INCLUDES) -o $@ $< $(INCLUDES) $(CFLAGS)
 
 delobj:
-	rm -f *.o
+	rm -f ./bin/*.o
 
 clean:
-	rm -f *.o shado
+	rm -f ./bin/*.o ./shado
 
 install:
 	mkdir -p $(BDIR)
