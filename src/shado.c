@@ -1,5 +1,5 @@
 /* <| Shado :: a lightweight, modular, and modal editor |> */
-#include "../include/shado.h"
+#include "shado.h"
 
 struct GlobalState E;
 struct Stack *undo;
