@@ -2,26 +2,25 @@ CC=gcc
 SHELL=/bin/sh
 CFLAGS=-g -Wno-deprecated -Wall -Wextra -pedantic -std=c99 -pie -pedantic -static-libasan # -fsanitize=address
 BDIR=/usr/local/bin/
-INCLUDES=-I./src/
 SRC=./src
 OBJ=./obj
+LIB=./lib
 
-FILES=shado.c s_abuf.c s_synhl.c s_term.c s_rows.c s_ops.c s_bar.c s_io.c s_search.c s_input.c s_output.c s_modes.c s_copyreg.c s_stack.c
+FILES=shado.c s_abuf.c s_synhl.c s_term.c s_rows.c s_ops.c s_bar.c s_io.c s_search.c s_input.c s_output.c s_modes.c s_copyreg.c s_stack.c .$(LIB)/rope.c
 SOURCES=$(patsubst %,$(SRC)/%,$(FILES))
-OBJECTS=$(SOURCES:.c=.o)
-# OBJECTS=$(patsubst %.c,$(OBJ)/%.o,$(FILES))
+OBJECTS=$(patsubst %.c,$(OBJ)/%.o,$(FILES))
 
 $(OBJ)/%.o: $(SRC)/%.c
-	$(CC) $(INCLUDES) -o $@ -c $< $(CFLAGS)
+	$(CC) -o $@ -c $< $(CFLAGS)
 
 shado: $(OBJECTS)
-	$(CC) $(INCLUDES) -o $@ $^ $(CFLAGS)
+	$(CC) -o $@ $^ $(CFLAGS)
 
 delobj:
-	rm -f ./bin/*.o
+	rm -f $(OBJ)/*.o
 
 clean:
-	rm -f ./bin/*.o ./shado
+	rm -f $(OBJ)/*.o ./shado
 
 install:
 	mkdir -p $(BDIR)
@@ -32,7 +31,7 @@ uninstall:
 	rm -f $(BDIR)/shado
 
 valgrind: shado
-	valgrind --log-file=./.valgrind.log --leak-check=full --show-leak-kinds=all --track-origins=yes ./shado shado.c
+	valgrind --log-file=./.valgrind.log --leak-check=full --show-leak-kinds=all --track-origins=yes ./shado src/shado.c
 
 gdb: shado
 	gdb ./shado

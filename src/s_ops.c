@@ -1,6 +1,7 @@
 /* --------------------------------- s_ops.c -------------------------------- */
 #include "shado.h"
 #include <ctype.h>
+#include "../lib/rope.h"
 
 void insert_char (int c) {
     if (E.cy == E.numrows)
@@ -71,6 +72,8 @@ int get_char_type (int c) {
     if (isspace(c)) return CHAR_WHITESPACE;
     if (is_separator(c)) return CHAR_SYM;
     if (c == '\n') return CHAR_NL;
+    rope *r=rope_new();
+    _rope_print(r);
     return CHAR_AZ09;
 }
 /* -------------------------------------------------------------------------- */
