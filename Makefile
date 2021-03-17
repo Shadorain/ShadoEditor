@@ -6,7 +6,8 @@ SRC=./src
 OBJ=./obj
 LIB=./lib
 
-FILES=shado.c s_abuf.c s_synhl.c s_term.c s_rows.c s_ops.c s_bar.c s_io.c s_search.c s_input.c s_output.c s_modes.c s_copyreg.c s_stack.c .$(LIB)/rope.c
+FILES=shado.c s_abuf.c s_term.c s_rows.c s_ops.c s_bar.c s_io.c s_search.c s_input.c s_output.c s_modes.c s_stack.c .$(LIB)/rope.c
+# FILES=shado.c s_abuf.c s_synhl.c s_term.c s_rows.c s_ops.c s_bar.c s_io.c s_search.c s_input.c s_output.c s_modes.c s_copyreg.c s_stack.c .$(LIB)/rope.c
 SOURCES=$(patsubst %,$(SRC)/%,$(FILES))
 OBJECTS=$(patsubst %.c,$(OBJ)/%.o,$(FILES))
 

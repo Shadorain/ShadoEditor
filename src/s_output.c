@@ -62,14 +62,14 @@ void draw_rows (struct abuf *ab) {
                     }
                     ab_append(ab, &c[i], 1);
                 } else {
-                    int color = syntax_to_color(hl[i]);
-                    if (color != cur_col) {
-                        cur_col = color;
-                        char buf[16];
-                        int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", color);
-                        ab_append(ab, buf, clen);
-                    }
-                    ab_append(ab, &c[i], 1);
+                    /* int color = syntax_to_color(hl[i]); */
+                    /* if (color != cur_col) { */
+                    /*     cur_col = color; */
+                    /*     char buf[16]; */
+                    /*     int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", color); */
+                    /*     ab_append(ab, buf, clen); */
+                    /* } */
+                    /* ab_append(ab, &c[i], 1); */
                 }
             ab_append(ab, "\x1b[39m", 5);
         }

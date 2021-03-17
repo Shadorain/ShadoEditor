@@ -10,7 +10,8 @@ void draw_sts_bar (struct abuf *ab) {
             E.filename ? E.filename : "[No Name]",
             E.dirty ? "(modified)" : "");
     int rlen = snprintf(rstatus, sizeof(rstatus), "%s | %d:%d",
-            E.syntax ? E.syntax->filetype : "no ft", E.cy + 1, E.numrows);
+            "no ft", E.cy + 1, E.numrows);
+            /* E.syntax ? E.syntax->filetype : "no ft", E.cy + 1, E.numrows); */
     if (len > E.screencols) len = E.screencols;
     ab_append(ab, status, len);
     while (len < E.screencols) {

@@ -6,44 +6,45 @@ struct Stack *undo;
 struct Stack *redo;
 
 struct GlobalState *make_snapshot () {
-    struct GlobalState *new = malloc(sizeof(struct GlobalState));
+    /* struct GlobalState *new = malloc(sizeof(struct GlobalState)); */
 
-    new->cx = E.cx;
-    new->cy = E.cy;
-    new->rx = E.rx;
-    new->rowoff = E.rowoff;
-    new->coloff = E.coloff;
-    new->screenrows = E.screenrows;
-    new->screencols = E.screencols;
-    new->dirty = E.dirty;
-    new->numrows = E.numrows;
-    new->filename = E.filename;
-    new->stsmsg_time = E.stsmsg_time;
-    new->syntax = E.syntax;
-    new->orig_termios = E.orig_termios;
-    new->mode = E.mode;
-    new->stsmsg[0] = *E.stsmsg;
+    /* new->cx = E.cx; */
+    /* new->cy = E.cy; */
+    /* new->rx = E.rx; */
+    /* new->rowoff = E.rowoff; */
+    /* new->coloff = E.coloff; */
+    /* new->screenrows = E.screenrows; */
+    /* new->screencols = E.screencols; */
+    /* new->dirty = E.dirty; */
+    /* new->numrows = E.numrows; */
+    /* new->filename = E.filename; */
+    /* new->stsmsg_time = E.stsmsg_time; */
+    /* new->syntax = E.syntax; */
+    /* new->orig_termios = E.orig_termios; */
+    /* new->mode = E.mode; */
+    /* new->stsmsg[0] = *E.stsmsg; */
 
-    new->row = malloc(sizeof(erow) * (E.numrows));
-    int i;
-    for (i = 0; i < new->numrows; i++){
-      new->row[i].idx = E.row[i].idx;
-      new->row[i].size = E.row[i].size;
-      new->row[i].rsize = E.row[i].rsize;
-      new->row[i].hl_open_comment = E.row[i].hl_open_comment;
+    /* new->row = malloc(sizeof(erow) * (E.numrows)); */
+    /* int i; */
+    /* for (i = 0; i < new->numrows; i++){ */
+    /*   new->row[i].idx = E.row[i].idx; */
+    /*   new->row[i].size = E.row[i].size; */
+    /*   new->row[i].rsize = E.row[i].rsize; */
+    /*   new->row[i].hl_open_comment = E.row[i].hl_open_comment; */
 
-      new->row[i].chars = malloc(E.row[i].size);
-      memcpy(new->row[i].chars, E.row[i].chars, E.row[i].size);
+    /*   new->row[i].chars = malloc(E.row[i].size); */
+    /*   memcpy(new->row[i].chars, E.row[i].chars, E.row[i].size); */
 
-      new->row[i].render = malloc(E.row[i].rsize);
-      memcpy(new->row[i].render, E.row[i].render, E.row[i].rsize);
+    /*   new->row[i].render = malloc(E.row[i].rsize); */
+    /*   memcpy(new->row[i].render, E.row[i].render, E.row[i].rsize); */
 
-      new->row[i].hl = malloc(E.row[i].rsize);
-      memcpy(new->row[i].hl, E.row[i].hl, E.row[i].rsize);
-    }
-    return new;
-    /* struct GlobalState *snapshot = &E; */
-    /* return snapshot; */
+    /*   new->row[i].hl = malloc(E.row[i].rsize); */
+    /*   memcpy(new->row[i].hl, E.row[i].hl, E.row[i].rsize); */
+    /* } */
+    /* return new; */
+    /* /1* struct GlobalState *snapshot = &E; *1/ */
+    /* /1* return snapshot; *1/ */
+    return NULL;
 }
 
 #ifdef DEBUG
@@ -61,8 +62,8 @@ void print_debug () {
     printf("dirty: %d\n\r", E.dirty);
     printf("filename: %s\n\r", E.filename);
     printf("stsmsg: %s\n\r", E.stsmsg);
-    printf("------- Syntax -------\n\r");
-    printf("syntax ft: %s\n\r", E.syntax->filetype);
+    /* printf("------- Syntax -------\n\r"); */
+    /* printf("syntax ft: %s\n\r", E.syntax->filetype); */
     printf("------- Extra -------\n\r");
     printf("mode: %d\n\rprint flag: %d\n\r", E.mode, E.print_flag);
     printf("------- CopyRegister -------\n\r");
@@ -89,11 +90,11 @@ void init () {
     E.stsmsg[0] = '\0';
     E.stsmsg_time = 0;
     E.dirty = 0;
-    E.syntax = NULL;
+    /* E.syntax = NULL; */
 
     E.mode = NORMAL;
     E.print_flag = 1;
-    E.cpyhead = NULL;
+    /* E.cpyhead = NULL; */
 
     if (get_win_size(&E.screenrows, &E.screencols) == -1) kill("getWindowSize");
     E.screenrows -= 2;

@@ -102,7 +102,7 @@ struct GlobalState {
     char *filename;
     char stsmsg[80];
     time_t stsmsg_time;
-    struct editorSyntax *syntax;
+    /* struct editorSyntax *syntax; */
     struct termios orig_termios;
     erow *row;
 
@@ -114,8 +114,8 @@ struct GlobalState {
     int print_flag;
 
     /* Global copy register */
-    CopyRegister *cpyhead;
-    CopyRegister *cpycurr;
+    /* CopyRegister *cpyhead; */
+    /* CopyRegister *cpycurr; */
 };
 /* }}} */
 /* --- Syntax --- {{{ */
@@ -207,7 +207,6 @@ void ab_free(struct abuf *ab);
 void update_syntax (erow *row);
 int syntax_to_color (int hl);
 void select_syntax_hl ();
-int is_separator (int c);
 
 /* |>- s_term.c -<| */
 void kill (const char *s);
@@ -235,6 +234,7 @@ void insert_char (int c);
 void delete_char ();
 void insert_nl ();
 int get_char_type ();
+int is_separator (int c);
 
 /* |>- s_bar.c -<| */
 void draw_sts_bar (struct abuf *ab);

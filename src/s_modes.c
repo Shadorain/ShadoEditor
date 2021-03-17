@@ -85,7 +85,7 @@ void n_yright();
 const struct mapping n_map[] = { 
     {'\r', n_return}, /* 13 */
     {CTRL_KEY('q'), quit}, /* 17 */
-    {CTRL_KEY('r'), n_redo}, /* 18 */
+    /* {CTRL_KEY('r'), n_redo}, /1* 18 *1/ */
     {27,  n_escape}, /* 27 */
     {'$', n_rowend}, /* 36 */
     {'/', n_search}, /* 47 */
@@ -96,7 +96,7 @@ const struct mapping n_map[] = {
     {'G', n_gbottom}, /* 71 */
     {'H', n_pagetop}, /* 72 */
     {'I', n_finsert}, /* 73 */
-    {'J', n_join}, /* 74 */
+    /* {'J', n_join}, /1* 74 *1/ */
     {'L', n_pagebottom}, /* 76 */
     /* {'N', n_decsearch}, /1* 78 *1/ */
     {'O', n_nlup}, /* 79 */
@@ -119,7 +119,7 @@ const struct mapping n_map[] = {
     {'o', n_nldown}, /* 111 */
     {'p', n_fprint}, /* 112 */
     {'s', n_idel}, /* 115 */
-    {'u', n_undo}, /* 117 */
+    /* {'u', n_undo}, /1* 117 *1/ */
     {'w', n_word}, /* 119 */
     {'x', n_cursdel}, /* 120 */
     {'y', n_ytree}, /* 121 */
@@ -254,14 +254,14 @@ void n_finsert() {
 }
 
 void n_nldown() {
-    push(&undo, make_snapshot());
+    /* push(&undo, make_snapshot()); */
     move_cursor(END_KEY);
     insert_nl();
     E.mode = INSERT;
     set_cursor_type();
 }
 void n_nlup() {
-    push(&undo, make_snapshot());
+    /* push(&undo, make_snapshot()); */
     move_cursor(UP);
     move_cursor(END_KEY);
     insert_nl();
@@ -270,31 +270,31 @@ void n_nlup() {
 }
 
 void n_cursdel() {
-    push(&undo, make_snapshot());
+    /* push(&undo, make_snapshot()); */
     move_cursor(RIGHT);
     delete_char();
 }
 void n_pcursdel() {
-    push(&undo, make_snapshot());
+    /* push(&undo, make_snapshot()); */
     delete_char();
 }
 
 void n_fprint() {
     /* TODO */
-    push(&undo, make_snapshot());
+    /* push(&undo, make_snapshot()); */
     move_cursor(RIGHT);
-    cpy_print();
+    /* cpy_print(); */
 }
 void n_bprint() {
     /* TODO */
-    push(&undo, make_snapshot());
-    cpy_print();
+    /* push(&undo, make_snapshot()); */
+    /* cpy_print(); */
 }
 
 void n_join() {
     if (E.cy == E.numrows - 1)
         return;
-    push(&undo, make_snapshot());
+    /* push(&undo, make_snapshot()); */
     erow *row = &E.row[E.cy];
     erow *row_under = &E.row[E.cy + 1];
     append_string_row(row, " ", 1);
@@ -303,14 +303,14 @@ void n_join() {
 }
 
 void n_idel() {
-    push(&undo, make_snapshot());
+    /* push(&undo, make_snapshot()); */
     move_cursor(RIGHT);
     delete_char();
     E.mode = INSERT;
     set_cursor_type();
 }
 void n_iedel() {
-    push(&undo, make_snapshot());
+    /* push(&undo, make_snapshot()); */
     delete_char();
     E.mode = INSERT;
     set_cursor_type();
@@ -391,7 +391,7 @@ void n_ctree() {
     int c = read_keypress();
     for (int i = 0; i < LEN(n_cmap); ++i)
         if (n_cmap[i].c == c) {
-            push(&undo, make_snapshot());
+            /* push(&undo, make_snapshot()); */
             n_cmap[i].cmd_func();
             E.mode = INSERT;
             break;
@@ -435,7 +435,7 @@ void n_cright() {
 }
 
 void n_echange() {
-    push(&undo, make_snapshot());
+    /* push(&undo, make_snapshot()); */
     int rx = E.rx;
     int rsize = E.row[E.cy].rsize;
 
@@ -463,7 +463,7 @@ void n_dtree() {
     int c = read_keypress();
     for (int i = 0; i < LEN(n_dmap); ++i)
         if (n_dmap[i].c == c) {
-            push(&undo, make_snapshot());
+            /* push(&undo, make_snapshot()); */
             n_dmap[i].cmd_func();
             break;
         }
@@ -494,7 +494,7 @@ void n_dright() {
 }
 
 void n_edelete() {
-    push(&undo, make_snapshot());
+    /* push(&undo, make_snapshot()); */
     int rx = E.rx;
     int rsize = E.row[E.cy].rsize;
 
@@ -570,7 +570,7 @@ void n_ytree() {
 }
 
 void n_yline() { 
-    cpy_prepend(E.row[E.cy].render);
+    /* cpy_prepend(E.row[E.cy].render); */
 }
 void n_ydown() {
     if (E.cy == E.numrows - 1)
@@ -578,28 +578,28 @@ void n_ydown() {
     erow *new_row = &E.row[E.cy];
     new_row = copy_append_row(new_row, "\n\r", 2);
     new_row = copy_append_row(new_row, E.row[E.cy+1].chars, E.row[E.cy+1].size);
-    cpy_prepend(new_row->chars);
+    /* cpy_prepend(new_row->chars); */
 }
 void n_yup() {
     move_cursor(UP);
     erow *new_row = &E.row[E.cy];
     new_row = copy_append_row(new_row, "\n\r", 2);
     new_row = copy_append_row(new_row, E.row[E.cy+1].chars, E.row[E.cy+1].size);
-    cpy_prepend(new_row->chars);
+    /* cpy_prepend(new_row->chars); */
 }
 void n_yleft() {
     char *c = malloc(3 * sizeof(char));
     c[0] = E.row[E.cy].render[E.rx];
     c[1] = E.row[E.cy].render[E.rx-1];
     c[2] = '\0';
-    if (c) cpy_prepend(c);
+    /* if (c) cpy_prepend(c); */
 }
 void n_yright() {
     char *d = malloc(3 * sizeof(char));
     d[0] = E.row[E.cy].render[E.rx];
     d[1] = E.row[E.cy].render[E.rx+1];
     d[2] = '\0';
-    if (d) cpy_prepend(d);
+    /* if (d) cpy_prepend(d); */
 }
 /*  }}} */
 /*}}}*/
@@ -658,20 +658,20 @@ void i_escape() {
 }
 
 void i_backspace() {
-    push(&undo, make_snapshot());
+    /* push(&undo, make_snapshot()); */
     delete_char();
     E.print_flag = 0;
 }
 
 void i_delete() {
-    push(&undo, make_snapshot());
+    /* push(&undo, make_snapshot()); */
     move_cursor(RIGHT);
     delete_char();
     E.print_flag = 0;
 }
 
 void i_return() {
-    push(&undo, make_snapshot());
+    /* push(&undo, make_snapshot()); */
     insert_nl();
     E.print_flag = 0;
 }
@@ -765,7 +765,7 @@ void process_keypress () {
         if (idx != -1)
             i_map[idx].cmd_func();
         if (E.mode == INSERT && E.print_flag == 1) { /* secondary check just incase */
-            push(&undo, make_snapshot());
+            /* push(&undo, make_snapshot()); */
             insert_char(c);
         }
     }

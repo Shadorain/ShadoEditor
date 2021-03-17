@@ -23,7 +23,7 @@ void open_file (char *filename) {
     free(E.filename);
     E.filename = strdup(filename);
 
-    select_syntax_hl();
+    /* select_syntax_hl(); */
 
     FILE *fp = fopen(filename, "r");
     if (!fp) kill("fopen");
@@ -48,7 +48,7 @@ void save_file () {
             set_sts_msg("Save aborted");
             return;
         }
-        select_syntax_hl();
+        /* select_syntax_hl(); */
     }
 
     int len;

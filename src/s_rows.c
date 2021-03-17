@@ -44,7 +44,7 @@ void update_row (erow *row) {
     row->render[idx] = '\0';
     row->rsize = idx;
 
-    update_syntax(row);
+    /* update_syntax(row); */
 }
 
 void insert_row (int at, char *s, size_t len) {

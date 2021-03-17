@@ -76,4 +76,8 @@ int get_char_type (int c) {
     _rope_print(r);
     return CHAR_AZ09;
 }
+
+int is_separator (int c) {
+    return isspace(c) || c == '\0' || strchr(",.()+-/*=~%><>[];", c) != NULL;
+}
 /* -------------------------------------------------------------------------- */
