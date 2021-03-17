@@ -137,7 +137,13 @@ uint8_t *rope_create_cstr(rope *r);
 // If you try to insert data into the rope with an invalid UTF8 encoding,
 // nothing will happen and we'll return ROPE_INVALID_UTF8.
 typedef enum { ROPE_OK, ROPE_INVALID_UTF8 } ROPE_RESULT;
+
+// Return char at specified index
+char rope_index(rope *r, size_t pos);
   
+// Append str to end of rope
+ROPE_RESULT rope_append(rope *r, const uint8_t *str);
+
 // Insert the given utf8 string into the rope at the specified position.
 ROPE_RESULT rope_insert(rope *r, size_t pos, const uint8_t *str);
 
