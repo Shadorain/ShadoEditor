@@ -232,7 +232,7 @@ void n_escape() {
 }
 
 void n_search() {
-    search();
+    /* search(); */
 }
 /* void n_incsearch() { */
 /*     /1* search_callback(char *query, int key) *1/ */
@@ -317,30 +317,30 @@ void n_iedel() {
 }
 
 void n_undo () {
-    /* pops off undo stack to be pushed to redo stack */
-    /* Maybe undo by dirty??? */
-    struct GlobalState *snap;
-    if(peek(undo)) {
-        snap = pop(&undo);
-        snap->mode = NORMAL;
-        push(&redo, snap);
-        E = *snap;
-        E.mode = NORMAL;
-        return;
-    }
-    set_sts_msg("Already at oldest change");
+    /* /1* pops off undo stack to be pushed to redo stack *1/ */
+    /* /1* Maybe undo by dirty??? *1/ */
+    /* struct GlobalState *snap; */
+    /* if(peek(undo)) { */
+    /*     snap = pop(&undo); */
+    /*     snap->mode = NORMAL; */
+    /*     push(&redo, snap); */
+    /*     E = *snap; */
+    /*     E.mode = NORMAL; */
+    /*     return; */
+    /* } */
+    /* set_sts_msg("Already at oldest change"); */
 }
 void n_redo () {
-    struct GlobalState *redoed;
-    if(peek(redo)) {
-        redoed = pop(&redo);
-        redoed->mode = NORMAL;
-        push(&undo, redoed);
-        E = *redoed;
-        E.mode = NORMAL;
-        return;
-    }
-    set_sts_msg("Already at newest change");
+    /* struct GlobalState *redoed; */
+    /* if(peek(redo)) { */
+    /*     redoed = pop(&redo); */
+    /*     redoed->mode = NORMAL; */
+    /*     push(&undo, redoed); */
+    /*     E = *redoed; */
+    /*     E.mode = NORMAL; */
+    /*     return; */
+    /* } */
+    /* set_sts_msg("Already at newest change"); */
 }
 
 void n_gbottom() {
