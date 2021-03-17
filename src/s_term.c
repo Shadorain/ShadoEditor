@@ -81,6 +81,7 @@ void quit () {
 #ifdef DEBUG
     print_debug ();
 #endif
+    free(E.filename);
     exit(0);
 }
 

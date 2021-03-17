@@ -56,8 +56,8 @@ void print_debug () {
     printf("rowoff: %d\n\rcoloff: %d\n\r", E.rowoff, E.coloff);
     printf("screenrows: %d\n\rscreencols: %d\n\r", E.screenrows, E.screencols);
     printf("numrows: %d\n\r", E.numrows);
-    printf("row (chars): %s\n\r", E.row[E.cy].chars);
-    printf("row (render): %s\n\r", E.row[E.cy].render);
+    /* printf("row (chars): %s\n\r", E.row[E.cy].chars); */
+    /* printf("row (render): %s\n\r", E.row[E.cy].render); */
     printf("------- Misc -------\n\r");
     printf("dirty: %d\n\r", E.dirty);
     printf("filename: %s\n\r", E.filename);
@@ -66,15 +66,15 @@ void print_debug () {
     /* printf("syntax ft: %s\n\r", E.syntax->filetype); */
     printf("------- Extra -------\n\r");
     printf("mode: %d\n\rprint flag: %d\n\r", E.mode, E.print_flag);
-    printf("------- CopyRegister -------\n\r");
+    /* printf("------- CopyRegister -------\n\r"); */
     /* printf("cpyhead: %s\n\r", E.cpyhead->line); */
     /* printf("cpycurr: %s\n\r", E.cpycurr->line); */
     printf("=======#----------------------#=======\n\r");
-    printf("======= Undo & Redo =======\n\r");
-    printf("------- Undo Stack -------\n\r");
+    /* printf("======= Undo & Redo =======\n\r"); */
+    /* printf("------- Undo Stack -------\n\r"); */
     /* printf("undo peek: %d\n\r", peek(undo)->mode); */
     /* printf("redo peek: %d\n\r", peek(redo)->mode); */
-    printf("=======#-----------#=======\n\r");
+    /* printf("=======#-----------#=======\n\r"); */
 }
 #endif
 

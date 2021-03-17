@@ -22,6 +22,7 @@ char *rows_to_string (int *buflen) {
 void open_file (char *filename) {
     free(E.filename);
     E.filename = strdup(filename);
+    /* free(filename); */
 
     /* select_syntax_hl(); */
 

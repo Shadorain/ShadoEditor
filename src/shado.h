@@ -91,6 +91,7 @@ struct CopyRegister {
 /* TODO: mutli files, maybe a new struct that holds a `focus` keyword for
    currently focused file, and holds the diff global state structs */
 struct GlobalState {
+    /* Cursor Handle struct */
     int cx, cy;
     int rx;
     int rowoff;
@@ -119,37 +120,37 @@ struct GlobalState {
 };
 /* }}} */
 /* --- Syntax --- {{{ */
-enum term_colors {
-    TERM_BLACK = 30, TERM_RED = 31,
-    TERM_GREEN = 32, TERM_YELLOW = 33,
-    TERM_BLUE = 34, TERM_MAGENTA = 35,
-    TERM_CYAN = 36, TERM_WHITE = 37,
-    TERM_BRIGHT_BLACK = 90, TERM_BRIGHT_RED = 91,
-    TERM_BRIGHT_GREEN = 92, TERM_BRIGHT_YELLOW = 93,
-    TERM_BRIGHT_BLUE = 94, TERM_BRIGHT_MAGENTA = 95,
-    TERM_BRIGHT_CYAN = 96, TERM_BRIGHT_WHITE = 97,
-};
+/* enum term_colors { */
+/*     TERM_BLACK = 30, TERM_RED = 31, */
+/*     TERM_GREEN = 32, TERM_YELLOW = 33, */
+/*     TERM_BLUE = 34, TERM_MAGENTA = 35, */
+/*     TERM_CYAN = 36, TERM_WHITE = 37, */
+/*     TERM_BRIGHT_BLACK = 90, TERM_BRIGHT_RED = 91, */
+/*     TERM_BRIGHT_GREEN = 92, TERM_BRIGHT_YELLOW = 93, */
+/*     TERM_BRIGHT_BLUE = 94, TERM_BRIGHT_MAGENTA = 95, */
+/*     TERM_BRIGHT_CYAN = 96, TERM_BRIGHT_WHITE = 97, */
+/* }; */
 
-struct editorSyntax {
-    char *filetype;
-    char **filematch;
-    char **keywords;
-    char *singleline_comment_start;
-    char *multiline_comment_start;
-    char *multiline_comment_end;
-    int flags;
-};
+/* struct editorSyntax { */
+/*     char *filetype; */
+/*     char **filematch; */
+/*     char **keywords; */
+/*     char *singleline_comment_start; */
+/*     char *multiline_comment_start; */
+/*     char *multiline_comment_end; */
+/*     int flags; */
+/* }; */
 
-enum editorHighlight {
-    HL_NORMAL = 0,
-    HL_COMMENT,
-    HL_MLCOMMENT,
-    HL_KEYWORD1,
-    HL_KEYWORD2,
-    HL_NUMBER,
-    HL_STRING,
-    HL_MATCH,
-};
+/* enum editorHighlight { */
+/*     HL_NORMAL = 0, */
+/*     HL_COMMENT, */
+/*     HL_MLCOMMENT, */
+/*     HL_KEYWORD1, */
+/*     HL_KEYWORD2, */
+/*     HL_NUMBER, */
+/*     HL_STRING, */
+/*     HL_MATCH, */
+/* }; */
 /* }}} */
 /* --- Keys --- {{{ */
 #define LEFT 'h'

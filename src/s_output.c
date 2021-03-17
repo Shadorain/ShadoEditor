@@ -41,7 +41,7 @@ void draw_rows (struct abuf *ab) {
             if (len > E.screencols) len = E.screencols;
 
             char *c = &E.row[filerow].render[E.coloff];
-            unsigned char *hl = &E.row[filerow].hl[E.coloff];
+            /* unsigned char *hl = &E.row[filerow].hl[E.coloff]; */
             int cur_col = -1;
             int i;
             for (i = 0; i < len; i++)
@@ -55,12 +55,13 @@ void draw_rows (struct abuf *ab) {
                         int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", cur_col);
                         ab_append(ab, buf, clen);
                     }
-                } else if (hl[i] == HL_NORMAL) {
-                    if (cur_col != -1) {
-                        ab_append(ab, "\x1b[39m", 5);
-                        cur_col = -1;
-                    }
-                    ab_append(ab, &c[i], 1);
+                /* } */ 
+                /* else if (hl[i] == HL_NORMAL) { */
+                /*     if (cur_col != -1) { */
+                /*         ab_append(ab, "\x1b[39m", 5); */
+                /*         cur_col = -1; */
+                /*     } */
+                /*     ab_append(ab, &c[i], 1); */
                 } else {
                     /* int color = syntax_to_color(hl[i]); */
                     /* if (color != cur_col) { */
