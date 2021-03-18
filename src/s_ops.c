@@ -4,68 +4,68 @@
 #include "../lib/rope.h"
 
 void insert_char (int c) {
-    if (E.cy == E.numrows)
+    if (E.curs.cy == E.numrows)
         insert_row(E.numrows, "", 0);
-    /* if (c == '\n') insert_char_row(&E.row[E.cy], E.cx, '\n'); */
+    /* if (c == '\n') insert_char_row(&E.row[E.curs.cy], E.curs.cx, '\n'); */
     if (c == '\n') return;
     else if (c == '\r') {
-        erow *row = &E.row[E.cy];
-        insert_row(E.cy+1, &row->chars[E.cx], row->size - E.cx);
-        row = &E.row[E.cy];
-        row->size = E.cx;
+        erow *row = &E.row[E.curs.cy];
+        insert_row(E.curs.cy+1, &row->chars[E.curs.cx], row->size - E.curs.cx);
+        row = &E.row[E.curs.cy];
+        row->size = E.curs.cx;
         row->chars[row->size] = '\0';
         update_row(row);
-        E.cy++;
+        E.curs.cy++;
     } else 
-        insert_char_row(&E.row[E.cy], E.cx, c);
-    E.cx++;
+        insert_char_row(&E.row[E.curs.cy], E.curs.cx, c);
+    E.curs.cx++;
 }
 
 void delete_char () {
-    if (E.cy == E.numrows) return;
-    if (E.cx == 0 && E.cy == 0) return;
+    if (E.curs.cy == E.numrows) return;
+    if (E.curs.cx == 0 && E.curs.cy == 0) return;
 
-    erow *row = &E.row[E.cy];
-    if (E.cx > 0) {
-        delete_char_row(row, E.cx - 1);
-        E.cx--;
+    erow *row = &E.row[E.curs.cy];
+    if (E.curs.cx > 0) {
+        delete_char_row(row, E.curs.cx - 1);
+        E.curs.cx--;
     } else {
-        E.cx = E.row[E.cy-1].size;
-        append_string_row(&E.row[E.cy-1], row->chars, row->size);
-        delete_row(E.cy);
-        E.cy--;
+        E.curs.cx = E.row[E.curs.cy-1].size;
+        append_string_row(&E.row[E.curs.cy-1], row->chars, row->size);
+        delete_row(E.curs.cy);
+        E.curs.cy--;
     }
 }
 
 /* char get_char () { */
-/*     /1* if (E.cy == E.numrows) return ; *1/ */
-/*     /1* if (E.cx == 0 && E.cy == 0) return; *1/ */
+/*     /1* if (E.curs.cy == E.numrows) return ; *1/ */
+/*     /1* if (E.curs.cx == 0 && E.curs.cy == 0) return; *1/ */
 
-/*     erow *row = &E.row[E.cy]; */
-/*     if (E.cx > 0) { */
-/*         delete_char_row(row, E.cx - 1); */
-/*         E.cx--; */
+/*     erow *row = &E.row[E.curs.cy]; */
+/*     if (E.curs.cx > 0) { */
+/*         delete_char_row(row, E.curs.cx - 1); */
+/*         E.curs.cx--; */
 /*     } else { */
-/*         E.cx = E.row[E.cy-1].size; */
-/*         append_string_row(&E.row[E.cy-1], row->chars, row->size); */
-/*         delete_row(E.cy); */
-/*         E.cy--; */
+/*         E.curs.cx = E.row[E.curs.cy-1].size; */
+/*         append_string_row(&E.row[E.curs.cy-1], row->chars, row->size); */
+/*         delete_row(E.curs.cy); */
+/*         E.curs.cy--; */
 /*     } */
 /* } */
 
 void insert_nl () {
-    if (E.cx == 0)
-        insert_row(E.cy, "", 0);
+    if (E.curs.cx == 0)
+        insert_row(E.curs.cy, "", 0);
     else {
-        erow *row = &E.row[E.cy];
-        insert_row(E.cy+1, &row->chars[E.cx], row->size - E.cx);
-        row = &E.row[E.cy];
-        row->size = E.cx;
+        erow *row = &E.row[E.curs.cy];
+        insert_row(E.curs.cy+1, &row->chars[E.curs.cx], row->size - E.curs.cx);
+        row = &E.row[E.curs.cy];
+        row->size = E.curs.cx;
         row->chars[row->size] = '\0';
         update_row(row);
     }
-    E.cy++;
-    E.cx = 0;
+    E.curs.cy++;
+    E.curs.cx = 0;
 }
 
 int get_char_type (int c) {

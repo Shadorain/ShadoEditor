@@ -39,9 +39,9 @@ void search_callback (char *query, int key) {
         char *match = strstr(row->render, query);
         if (match) {
             last_match = current;
-            E.cy = current;
-            E.cx = row_rx_to_cx(row, match - row->render);
-            E.rowoff = E.numrows;
+            E.curs.cy = current;
+            E.curs.cx = row_rx_to_cx(row, match - row->render);
+            E.curs.rowoff = E.numrows;
 
             saved_hl_line = current;
             saved_hl = malloc(row->rsize);
@@ -53,19 +53,19 @@ void search_callback (char *query, int key) {
 }
 
 void search () {
-    int saved_cx = E.cx;
-    int saved_cy = E.cy;
-    int saved_coloff = E.coloff;
-    int saved_rowoff = E.rowoff;
+    int saved_cx = E.curs.cx;
+    int saved_cy = E.curs.cy;
+    int saved_coloff = E.curs.coloff;
+    int saved_rowoff = E.curs.rowoff;
     char *query = prompt_line("Search: %s (ESC: Cancel | n/N: Move)", search_callback);
 
     if (query)
         free(query);
     else {
-        E.cx = saved_cx;
-        E.cy = saved_cy;
-        E.coloff = saved_coloff;
-        E.rowoff = saved_rowoff;
+        E.curs.cx = saved_cx;
+        E.curs.cy = saved_cy;
+        E.curs.coloff = saved_coloff;
+        E.curs.rowoff = saved_rowoff;
     }
 }
 /* -------------------------------------------------------------------------- */

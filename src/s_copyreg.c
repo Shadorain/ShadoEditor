@@ -2,8 +2,8 @@
 #include "shado.h"
 
 void cpy_print() {
-    /* int rx = E.rx; /1* To go back to after printing *1/ */
-    /* int cx = E.cx; */
+    /* int rx = E.curs.rx; /1* To go back to after printing *1/ */
+    /* int cx = E.curs.cx; */
 
     /* Extremely slow but gets the job done for now */
     if(E.cpyhead) {
@@ -11,8 +11,8 @@ void cpy_print() {
             insert_char(E.cpyhead->line[i]);
         set_sts_msg("HEAD: %s", E.cpyhead->line);
     }
-    /* E.rx = rx; */
-    /* E.cx = cx; */
+    /* E.curs.rx = rx; */
+    /* E.curs.cx = cx; */
 }
 
 void cpy_append (char *line) {

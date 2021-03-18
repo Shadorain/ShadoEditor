@@ -143,76 +143,76 @@ void n_back() {
     
 }
 void n_end() {
-    /* erow *r = &E.row[E.cy]; */
+    /* erow *r = &E.row[E.curs.cy]; */
     /* int chk = -1; */
     /* int prev_pos = -1; */
 
-    /* while (E.cy < E.numrows) { */
-    /*     if (E.cx >= r->size) { */
-    /*         if (E.cy == E.numrows - 1) { */
-    /*             E.cx = r->size; */
+    /* while (E.curs.cy < E.numrows) { */
+    /*     if (E.curs.cx >= r->size) { */
+    /*         if (E.curs.cy == E.numrows - 1) { */
+    /*             E.curs.cx = r->size; */
     /*             return; */
     /*         } */
-    /*         E.cy++; */
-    /*         r = &E.row[E.cy]; */
-    /*         E.cx = 0; */
+    /*         E.curs.cy++; */
+    /*         r = &E.row[E.curs.cy]; */
+    /*         E.curs.cx = 0; */
     /*     } */
-    /*     chk = get_char_type(r->chars[E.cx]); */
+    /*     chk = get_char_type(r->chars[E.curs.cx]); */
     /*     /1* if ((cursor != CHAR_SPACE) && (previous_cursor > 0) && *1/ */
-    /*     /1* ((previous_cursor != cursor) || E.cx == 0)) { *1/ */
+    /*     /1* ((previous_cursor != cursor) || E.curs.cx == 0)) { *1/ */
     /*     /1* if ((chk != CHAR_WHITESPACE && prev_pos > 0 && prev_pos != chk)) //|| (chk == CHAR_AZ09 || chk == CHAR_SYM)) *1/ */
     /*     if (chk == CHAR_AZ09 || chk == CHAR_SYM) move_cursor(RIGHT); */
     /*     if ((chk != CHAR_AZ09 && chk != CHAR_SYM && (prev_pos == 0 && prev_pos != chk))) { */
-    /*         E.cx--; */
+    /*         E.curs.cx--; */
     /*         break; */
     /*     } */
-    /*     E.cx++; */
+    /*     E.curs.cx++; */
     /*     prev_pos = chk; */
     /* } */
 }
 void n_word() {
-    /* erow *r = &E.row[E.cy]; */
+    /* erow *r = &E.row[E.curs.cy]; */
     /* int chk = -1; */
     /* int prev_pos = -1; */
 
-    /* while (E.cy < E.numrows) { */
-    /*     if (E.cx >= r->size) { */
-    /*         if (E.cy == E.numrows - 1) { */
-    /*             E.cx = r->size; */
+    /* while (E.curs.cy < E.numrows) { */
+    /*     if (E.curs.cx >= r->size) { */
+    /*         if (E.curs.cy == E.numrows - 1) { */
+    /*             E.curs.cx = r->size; */
     /*             return; */
     /*         } */
-    /*         E.cy++; */
-    /*         r = &E.row[E.cy]; */
-    /*         E.cx = 0; */
+    /*         E.curs.cy++; */
+    /*         r = &E.row[E.curs.cy]; */
+    /*         E.curs.cx = 0; */
     /*     } */
-    /*     chk = get_char_type(r->chars[E.cx]); */
+    /*     chk = get_char_type(r->chars[E.curs.cx]); */
     /*     /1* if ((cursor != CHAR_SPACE) && (previous_cursor > 0) && *1/ */
-    /*     /1* ((previous_cursor != cursor) || E.cx == 0)) { *1/ */
+    /*     /1* ((previous_cursor != cursor) || E.curs.cx == 0)) { *1/ */
     /*     if ((chk != CHAR_WHITESPACE && prev_pos > 0 && prev_pos != chk)) //|| (chk == CHAR_AZ09 || chk == CHAR_SYM)) */
     /*         break; */
-    /*     E.cx++; */
+    /*     E.curs.cx++; */
     /*     prev_pos = chk; */
     /* } */
 }
 void n_paragraph() {
-    /* erow *r = &E.row[E.cy]; */
+    /* erow *r = &E.row[E.curs.cy]; */
     /* int chk = -1; */
 
-    /* while (E.cy < E.numrows) { */
-    /*     if (E.cx >= r->size) { */
-    /*         if (E.cy == E.numrows - 1) { */
-    /*             E.cx = r->size; */
+    /* while (E.curs.cy < E.numrows) { */
+    /*     if (E.curs.cx >= r->size) { */
+    /*         if (E.curs.cy == E.numrows - 1) { */
+    /*             E.curs.cx = r->size; */
     /*             return; */
     /*         } */
-    /*         E.cy++; */
-    /*         r = &E.row[E.cy]; */
-    /*         E.cx = 0; */
+    /*         E.curs.cy++; */
+    /*         r = &E.row[E.curs.cy]; */
+    /*         E.curs.cx = 0; */
     /*     } */
-    /*     chk = get_char_type(E.row[E.cy].chars[0]); */
-    /*     /1* if (chk != CHAR_WHITESPACE && E.cx == 0) *1/ */
+    /*     chk = get_char_type(E.row[E.curs.cy].chars[0]); */
+    /*     /1* if (chk != CHAR_WHITESPACE && E.curs.cx == 0) *1/ */
     /*     if (chk == CHAR_NL) */
     /*         break; */
-    /*     E.cy++; */
+    /*     E.curs.cy++; */
     /* } */
 }
 void n_paragraphb() {
@@ -248,7 +248,7 @@ void n_insert() {
 }
 void n_finsert() {
     /* TODO: go to first non whitespace char */
-    E.cx = 0;
+    E.curs.cx = 0;
     E.mode = INSERT;
     set_cursor_type();
 }
@@ -292,14 +292,14 @@ void n_bprint() {
 }
 
 void n_join() {
-    if (E.cy == E.numrows - 1)
+    if (E.curs.cy == E.numrows - 1)
         return;
     /* push(&undo, make_snapshot()); */
-    erow *row = &E.row[E.cy];
-    erow *row_under = &E.row[E.cy + 1];
+    erow *row = &E.row[E.curs.cy];
+    erow *row_under = &E.row[E.curs.cy + 1];
     append_string_row(row, " ", 1);
     append_string_row(row, row_under->chars, row_under->size);
-    delete_row(E.cy + 1);
+    delete_row(E.curs.cy + 1);
 }
 
 void n_idel() {
@@ -344,8 +344,8 @@ void n_redo () {
 }
 
 void n_gbottom() {
-    E.cy = E.numrows - 1;
-    /* E.cx = E.row[E.cy].size; */
+    E.curs.cy = E.numrows - 1;
+    /* E.curs.cx = E.row[E.curs.cy].size; */
 }
 
 void n_pagetop() { move_cursor(PAGE_UP); }
@@ -402,22 +402,22 @@ void n_ctree() {
 }
 
 void n_cline() {
-    delete_row(E.cy);
+    delete_row(E.curs.cy);
     insert_nl();
     move_cursor(UP);
     E.mode = INSERT;
     set_cursor_type();
 }
 void n_cdown() {
-    delete_row(E.cy);
-    delete_row(E.cy);
+    delete_row(E.curs.cy);
+    delete_row(E.curs.cy);
     E.mode = INSERT;
     set_cursor_type();
 }
 void n_cup() {
-    delete_row(E.cy);
+    delete_row(E.curs.cy);
     move_cursor(UP);
-    delete_row(E.cy);
+    delete_row(E.curs.cy);
     E.mode = INSERT;
     set_cursor_type();
 }
@@ -436,8 +436,8 @@ void n_cright() {
 
 void n_echange() {
     /* push(&undo, make_snapshot()); */
-    int rx = E.rx;
-    int rsize = E.row[E.cy].rsize;
+    int rx = E.curs.rx;
+    int rsize = E.row[E.curs.cy].rsize;
 
     move_cursor(END_KEY);
     for (int i = 0; i < rsize - rx; i++)
@@ -473,16 +473,16 @@ void n_dtree() {
 }
 
 void n_dline() {
-    delete_row(E.cy);
+    delete_row(E.curs.cy);
 }
 void n_ddown() {
-    delete_row(E.cy);
-    delete_row(E.cy);
+    delete_row(E.curs.cy);
+    delete_row(E.curs.cy);
 }
 void n_dup() {
-    delete_row(E.cy);
+    delete_row(E.curs.cy);
     move_cursor(UP);
-    delete_row(E.cy);
+    delete_row(E.curs.cy);
 }
 void n_dleft() {
     delete_char();
@@ -495,8 +495,8 @@ void n_dright() {
 
 void n_edelete() {
     /* push(&undo, make_snapshot()); */
-    int rx = E.rx;
-    int rsize = E.row[E.cy].rsize;
+    int rx = E.curs.rx;
+    int rsize = E.row[E.curs.cy].rsize;
 
     move_cursor(END_KEY);
     for (int i = 0; i < rsize - rx; i++)
@@ -529,8 +529,8 @@ void n_gtree() {
 }
 
 void n_gtop() {
-    E.cy = 0;
-    E.cx = 0;
+    E.curs.cy = 0;
+    E.curs.cx = 0;
 }
 void n_gdown() {
     move_cursor(DOWN);
@@ -570,34 +570,34 @@ void n_ytree() {
 }
 
 void n_yline() { 
-    /* cpy_prepend(E.row[E.cy].render); */
+    /* cpy_prepend(E.row[E.curs.cy].render); */
 }
 void n_ydown() {
-    if (E.cy == E.numrows - 1)
+    if (E.curs.cy == E.numrows - 1)
         return;
-    erow *new_row = &E.row[E.cy];
+    erow *new_row = &E.row[E.curs.cy];
     new_row = copy_append_row(new_row, "\n\r", 2);
-    new_row = copy_append_row(new_row, E.row[E.cy+1].chars, E.row[E.cy+1].size);
+    new_row = copy_append_row(new_row, E.row[E.curs.cy+1].chars, E.row[E.curs.cy+1].size);
     /* cpy_prepend(new_row->chars); */
 }
 void n_yup() {
     move_cursor(UP);
-    erow *new_row = &E.row[E.cy];
+    erow *new_row = &E.row[E.curs.cy];
     new_row = copy_append_row(new_row, "\n\r", 2);
-    new_row = copy_append_row(new_row, E.row[E.cy+1].chars, E.row[E.cy+1].size);
+    new_row = copy_append_row(new_row, E.row[E.curs.cy+1].chars, E.row[E.curs.cy+1].size);
     /* cpy_prepend(new_row->chars); */
 }
 void n_yleft() {
     char *c = malloc(3 * sizeof(char));
-    c[0] = E.row[E.cy].render[E.rx];
-    c[1] = E.row[E.cy].render[E.rx-1];
+    c[0] = E.row[E.curs.cy].render[E.curs.rx];
+    c[1] = E.row[E.curs.cy].render[E.curs.rx-1];
     c[2] = '\0';
     /* if (c) cpy_prepend(c); */
 }
 void n_yright() {
     char *d = malloc(3 * sizeof(char));
-    d[0] = E.row[E.cy].render[E.rx];
-    d[1] = E.row[E.cy].render[E.rx+1];
+    d[0] = E.row[E.curs.cy].render[E.curs.rx];
+    d[1] = E.row[E.curs.cy].render[E.curs.rx+1];
     d[2] = '\0';
     /* if (d) cpy_prepend(d); */
 }

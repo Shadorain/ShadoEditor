@@ -39,61 +39,61 @@ char *prompt_line (char *prompt, void (*callback)(char *, int)) {
 //}}}
 /* -- Move Cursor -- {{{ */
 void move_cursor (int key) {
-    erow *row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
+    erow *row = (E.curs.cy >= E.numrows) ? NULL : &E.row[E.curs.cy];
 
     switch (key) {
         case LEFT:
-            if (E.cx != 0)
-                E.cx--;
-            /* else if (E.cy > 0) { */
-            /*     E.cy--; */
-            /*     E.cx = E.row[E.cy].size; */
+            if (E.curs.cx != 0)
+                E.curs.cx--;
+            /* else if (E.curs.cy > 0) { */
+            /*     E.curs.cy--; */
+            /*     E.curs.cx = E.row[E.curs.cy].size; */
             /* } */
             break;
         case DOWN:
-            if (E.cy < E.numrows)
-                E.cy++;
+            if (E.curs.cy < E.numrows)
+                E.curs.cy++;
             break;
         case UP:
-            if (E.cy != 0)
-                E.cy--;
+            if (E.curs.cy != 0)
+                E.curs.cy--;
             break;
         case RIGHT:
-            if (row && E.cx < row->size)
-                E.cx++;
-            /* else if (row && E.cx == row->size) { */
-            /*     E.cy++; */
-            /*     E.cx = 0; */
+            if (row && E.curs.cx < row->size)
+                E.curs.cx++;
+            /* else if (row && E.curs.cx == row->size) { */
+            /*     E.curs.cy++; */
+            /*     E.curs.cx = 0; */
             /* } */
             break;
 
         case HOME_KEY:
-            E.cx = 0;
+            E.curs.cx = 0;
             break;
         case END_KEY:
-            if (E.cy < E.numrows)
-                E.cx = E.row[E.cy].size;
+            if (E.curs.cy < E.numrows)
+                E.curs.cx = E.row[E.curs.cy].size;
             break;
 
         case PAGE_UP:
-            E.cy = E.rowoff;
+            E.curs.cy = E.curs.rowoff;
             int times = E.screenrows;
             while (times--)
                 move_cursor(UP);
             break;
         case PAGE_DOWN:
-            E.cy = E.rowoff + E.screenrows - 1;
-            if (E.cy > E.numrows) E.cy = E.numrows;
+            E.curs.cy = E.curs.rowoff + E.screenrows - 1;
+            if (E.curs.cy > E.numrows) E.curs.cy = E.numrows;
             times = E.screenrows;
             while (times--)
                 move_cursor(DOWN);
             break;
     }
 
-    row = (E.cy >= E.numrows) ? NULL : &E.row[E.cy];
+    row = (E.curs.cy >= E.numrows) ? NULL : &E.row[E.curs.cy];
     int rowlen = row ? row->size : 0;
-    if (E.cx > rowlen)
-        E.cx = rowlen;
+    if (E.curs.cx > rowlen)
+        E.curs.cx = rowlen;
 }
 /*}}}*/
 /* -------------------------------------------------------------------------- */

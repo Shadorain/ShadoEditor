@@ -8,11 +8,11 @@ struct Stack *redo;
 struct GlobalState *make_snapshot () {
     /* struct GlobalState *new = malloc(sizeof(struct GlobalState)); */
 
-    /* new->cx = E.cx; */
-    /* new->cy = E.cy; */
-    /* new->rx = E.rx; */
-    /* new->rowoff = E.rowoff; */
-    /* new->coloff = E.coloff; */
+    /* new->cx = E.curs.cx; */
+    /* new->cy = E.curs.cy; */
+    /* new->rx = E.curs.rx; */
+    /* new->rowoff = E.curs.rowoff; */
+    /* new->coloff = E.curs.coloff; */
     /* new->screenrows = E.screenrows; */
     /* new->screencols = E.screencols; */
     /* new->dirty = E.dirty; */
@@ -51,13 +51,13 @@ struct GlobalState *make_snapshot () {
 void print_debug () {
     printf("======= GlobalState Debug Info =======\n\r");
     printf("------- Cursor -------\n\r");
-    printf("cx: %d\n\rcy: %d\n\rrx: %d\n\r", E.cx, E.cy, E.rx);
+    printf("cx: %d\n\rcy: %d\n\rrx: %d\n\r", E.curs.cx, E.curs.cy, E.curs.rx);
     printf("------- Rows -------\n\r");
-    printf("rowoff: %d\n\rcoloff: %d\n\r", E.rowoff, E.coloff);
+    printf("rowoff: %d\n\rcoloff: %d\n\r", E.curs.rowoff, E.curs.coloff);
     printf("screenrows: %d\n\rscreencols: %d\n\r", E.screenrows, E.screencols);
     printf("numrows: %d\n\r", E.numrows);
-    /* printf("row (chars): %s\n\r", E.row[E.cy].chars); */
-    /* printf("row (render): %s\n\r", E.row[E.cy].render); */
+    /* printf("row (chars): %s\n\r", E.row[E.curs.cy].chars); */
+    /* printf("row (render): %s\n\r", E.row[E.curs.cy].render); */
     printf("------- Misc -------\n\r");
     printf("dirty: %d\n\r", E.dirty);
     printf("filename: %s\n\r", E.filename);
@@ -79,12 +79,12 @@ void print_debug () {
 #endif
 
 void init () {
-    E.cx = 0;
-    E.cy = 0;
-    E.rx = 0;
+    E.curs.cx = 0;
+    E.curs.cy = 0;
+    E.curs.rx = 0;
+    E.curs.rowoff = 0;
+    E.curs.coloff = 0;
     E.numrows = 0;
-    E.rowoff = 0;
-    E.coloff = 0;
     E.row = NULL;
     E.filename = NULL;
     E.stsmsg[0] = '\0';

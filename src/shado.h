@@ -87,15 +87,20 @@ struct CopyRegister {
     CopyRegister *next;
 };
 /* }}} */
-/* --- Global State --- {{{ */
-/* TODO: mutli files, maybe a new struct that holds a `focus` keyword for
-   currently focused file, and holds the diff global state structs */
-struct GlobalState {
-    /* Cursor Handle struct */
+/* --- Cursor --- {{{ */
+/* Cursor Handle struct */
+struct Cursor {
     int cx, cy;
     int rx;
     int rowoff;
     int coloff;
+};
+/* }}} */
+/* --- Global State --- {{{ */
+/* TODO: mutli files, maybe a new struct that holds a `focus` keyword for
+   currently focused file, and holds the diff global state structs */
+struct GlobalState {
+    struct Cursor curs;
     int screenrows;
     int screencols;
     int numrows;

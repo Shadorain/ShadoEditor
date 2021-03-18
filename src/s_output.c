@@ -2,24 +2,24 @@
 #include "shado.h"
 
 void scroll () {
-    E.rx = 0;
-    if (E.cy < E.numrows)
-        E.rx = row_cx_to_rx(&E.row[E.cy], E.cx);
+    E.curs.rx = 0;
+    if (E.curs.cy < E.numrows)
+        E.curs.rx = row_cx_to_rx(&E.row[E.curs.cy], E.curs.cx);
 
-    if (E.cy < E.rowoff)
-        E.rowoff = E.cy;
-    if (E.cy >= E.rowoff + E.screenrows)
-        E.rowoff = E.cy - E.screenrows + 1;
-    if (E.rx < E.coloff)
-        E.coloff = E.rx;
-    if (E.rx >= E.coloff + E.screencols)
-        E.coloff = E.rx - E.screencols + 1;
+    if (E.curs.cy < E.curs.rowoff)
+        E.curs.rowoff = E.curs.cy;
+    if (E.curs.cy >= E.curs.rowoff + E.screenrows)
+        E.curs.rowoff = E.curs.cy - E.screenrows + 1;
+    if (E.curs.rx < E.curs.coloff)
+        E.curs.coloff = E.curs.rx;
+    if (E.curs.rx >= E.curs.coloff + E.screencols)
+        E.curs.coloff = E.curs.rx - E.screencols + 1;
 }
 
 void draw_rows (struct abuf *ab) {
     int y;
     for (y = 0; y < E.screenrows; y++) {
-        int filerow = y + E.rowoff;
+        int filerow = y + E.curs.rowoff;
         if (filerow >= E.numrows) {
             if (E.numrows == 0 && y == E.screenrows / 3) {
                 char welcome[80];
@@ -36,12 +36,12 @@ void draw_rows (struct abuf *ab) {
             } else
                 ab_append(ab, "~", 1);
         } else {
-            int len = E.row[filerow].rsize - E.coloff;
+            int len = E.row[filerow].rsize - E.curs.coloff;
             if (len < 0) len = 0;
             if (len > E.screencols) len = E.screencols;
 
-            char *c = &E.row[filerow].render[E.coloff];
-            /* unsigned char *hl = &E.row[filerow].hl[E.coloff]; */
+            char *c = &E.row[filerow].render[E.curs.coloff];
+            /* unsigned char *hl = &E.row[filerow].hl[E.curs.coloff]; */
             int cur_col = -1;
             int i;
             for (i = 0; i < len; i++)
@@ -91,8 +91,8 @@ void refresh_screen () {
     draw_msg_bar(&ab);
 
     char buf[32];
-    snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.cy - E.rowoff) + 1,
-                                              (E.rx - E.coloff) + 1);
+    snprintf(buf, sizeof(buf), "\x1b[%d;%dH", (E.curs.cy - E.curs.rowoff) + 1,
+                                              (E.curs.rx - E.curs.coloff) + 1);
     ab_append(&ab, buf, strlen(buf));
     ab_append(&ab, "\x1b[?25h", 6); /* Unhide Cursor */
 
