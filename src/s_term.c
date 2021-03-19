@@ -78,9 +78,12 @@ void quit () {
     set_cursor_type();
     write(STDOUT_FILENO, "\x1b[2J", 4);
     write(STDOUT_FILENO, "\x1b[H", 3);
+    disable_raw();
 #ifdef DEBUG
     print_debug ();
 #endif
+    _rope_print(E.rope_head);
+    rope_free(E.rope_head);
     free(E.filename);
     exit(0);
 }

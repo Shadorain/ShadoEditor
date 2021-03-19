@@ -590,7 +590,9 @@ static ROPE_RESULT rope_insert_at_iter(rope *r, rope_node *e, rope_iter *iter, c
 
 /* Wrapper function: appends to end of rope */
 ROPE_RESULT rope_append (rope *r, const uint8_t *str) {
-    return rope_insert(r, rope_byte_count(r), str);
+  if (!r->num_bytes)
+    return rope_insert(r, 0, str);
+  return rope_insert(r, rope_byte_count(r), str);
 }
 
 ROPE_RESULT rope_insert(rope *r, size_t pos, const uint8_t *str) {

@@ -59,11 +59,10 @@ struct abuf {
 typedef struct erow {
     int idx;
     int size;
-    int rsize;
-    int hl_open_comment;
-    char *chars;
+    /* int rsize; */
+    /* int hl_open_comment; */
     char *render;
-    unsigned char *hl;
+    /* unsigned char *hl; */
 } erow;
 /* }}} */
 /* --- Mapping ---  {{{ */

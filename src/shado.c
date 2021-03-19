@@ -92,7 +92,7 @@ void init () {
     /* E.syntax = NULL; */
 
     E.row = NULL;
-    E.rows = rope_new(); /* moving to this */
+    E.rope_head = rope_new(); /* moving to this */
 
     E.mode = NORMAL;
     E.print_flag = 1;
@@ -116,6 +116,7 @@ int main (int argc, char *argv[]) {
     /*     refresh_screen(); */
     /*     process_keypress(); */
     /* } */
+    quit();
     return 0;
 }
 /* <| ------------------------------------------------- |> */
