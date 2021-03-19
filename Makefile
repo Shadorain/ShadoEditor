@@ -32,7 +32,7 @@ uninstall:
 	rm -f $(BDIR)/shado
 
 valgrind: shado
-	valgrind --log-file=./.valgrind.log --leak-check=full --show-leak-kinds=all --track-origins=yes ./shado src/shado.c
+	valgrind -s --log-file=./.valgrind.log --leak-check=full --show-leak-kinds=all --track-origins=yes ./shado src/shado.c
 
 gdb: shado
 	gdb ./shado

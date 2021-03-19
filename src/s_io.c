@@ -22,7 +22,6 @@ char *rows_to_string (int *buflen) {
 void open_file (char *filename) {
     free(E.filename);
     E.filename = strdup(filename);
-    /* free(filename); */
 
     /* select_syntax_hl(); */
 
@@ -33,8 +32,8 @@ void open_file (char *filename) {
     size_t linecap = 0;
     ssize_t linelen;
     while ((linelen = getline(&line, &linecap, fp)) != -1) {
-        while (linelen > 0 && (line[linelen - 1] == '\n' || line[linelen - 1] == '\r'))
-            linelen--;
+        while (linelen > 0 && (line[linelen - 1] == '\n'
+                    || line[linelen - 1] == '\r')) linelen--;
         insert_row(E.numrows, line, linelen);
     }
     free(line);

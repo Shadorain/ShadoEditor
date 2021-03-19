@@ -4,6 +4,8 @@
 #define _BSD_SOURCE
 #define _GNU_SOURCE
 
+#include "../lib/rope.h"
+
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -19,8 +21,8 @@
 /*}}}*/
 /* -- Externs -- {{{ */
 extern struct GlobalState E;
-extern struct Stack *undo;
-extern struct Stack *redo;
+/* extern struct Stack *undo; */
+/* extern struct Stack *redo; */
 /*}}}*/
 /* -- Macros -- {{{ */
 #define SHADO_VERSION "0.0.1"
@@ -110,6 +112,8 @@ struct GlobalState {
     time_t stsmsg_time;
     /* struct editorSyntax *syntax; */
     struct termios orig_termios;
+    
+    rope *rope_head;
     erow *row;
 
     /* 0: normal, 1: insert, 2: visual, 3: visual_line,
@@ -226,7 +230,8 @@ int get_win_size (int *rows, int *cols);
 /* |>- s_rows.c -<| */
 int row_cx_to_rx (erow *row, int cx);
 int row_rx_to_cx (erow *row, int rx);
-void update_row (erow *row);
+void update_row_chars (erow *row);
+void update_row (rope *row);
 void insert_row (int at, char *s, size_t len);
 void free_row (erow *row);
 void delete_row (int at);

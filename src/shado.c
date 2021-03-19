@@ -2,8 +2,8 @@
 #include "shado.h"
 
 struct GlobalState E;
-struct Stack *undo;
-struct Stack *redo;
+/* struct Stack *undo; */
+/* struct Stack *redo; */
 
 struct GlobalState *make_snapshot () {
     /* struct GlobalState *new = malloc(sizeof(struct GlobalState)); */
@@ -85,12 +85,14 @@ void init () {
     E.curs.rowoff = 0;
     E.curs.coloff = 0;
     E.numrows = 0;
-    E.row = NULL;
     E.filename = NULL;
     E.stsmsg[0] = '\0';
     E.stsmsg_time = 0;
     E.dirty = 0;
     /* E.syntax = NULL; */
+
+    E.row = NULL;
+    E.rows = rope_new(); /* moving to this */
 
     E.mode = NORMAL;
     E.print_flag = 1;
@@ -99,8 +101,8 @@ void init () {
     if (get_win_size(&E.screenrows, &E.screencols) == -1) kill("getWindowSize");
     E.screenrows -= 2;
 
-    undo = NULL;
-    redo = NULL;
+    /* undo = NULL; */
+    /* redo = NULL; */
 }
 
 int main (int argc, char *argv[]) {
@@ -108,12 +110,12 @@ int main (int argc, char *argv[]) {
     init();
     if (argc >= 2) open_file(argv[1]);
 
-    set_sts_msg("HELP: C-q: Quit | C-s: Save | C-f: Find");
+    /* set_sts_msg("HELP: C-q: Quit | C-s: Save | C-f: Find"); */
 
-    while (1) {
-        refresh_screen();
-        process_keypress();
-    }
+    /* while (1) { */
+    /*     refresh_screen(); */
+    /*     process_keypress(); */
+    /* } */
     return 0;
 }
 /* <| ------------------------------------------------- |> */

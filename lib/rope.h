@@ -92,6 +92,7 @@ typedef struct {
   void (*free)(void *ptr);
 
   // The first node exists inline in the rope structure itself.
+  #pragma GCC diagnostic ignored "-Wpedantic"
   rope_node head;
 } rope;
 
