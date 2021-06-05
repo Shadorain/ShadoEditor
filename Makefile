@@ -1,6 +1,6 @@
 CC=gcc
 SHELL=/bin/sh
-CFLAGS=-g -Wno-deprecated -Wall -Wextra -pedantic -std=c99 -pie -pedantic -static-libasan # -fsanitize=address
+CFLAGS=-ggdb3 -Wno-deprecated -Wall -Wextra -pedantic -std=c99 -pie -pedantic -static-libasan # -fsanitize=address
 BDIR=/usr/local/bin/
 SRC=./src
 OBJ=./obj
