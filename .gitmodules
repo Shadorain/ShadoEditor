@@ -1,0 +1,3 @@
+[submodule "mod/librope"]
+	path = mod/librope
+	url = https://github.com/josephg/librope
